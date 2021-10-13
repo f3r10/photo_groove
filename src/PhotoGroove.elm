@@ -19,13 +19,15 @@ type ThumnailSize
     | Large
 
 type alias Photo = {url : String}
+type alias Size = {size: ThumnailSize, selected: Bool}
 type alias Model =  
     { photos : List Photo
     , selectImg : String
-    , chosenSize: (ThumnailSize, Bool) }
+    , chosenSize: ThumnailSize
+    , sizes: List Size}
 type Msg 
     = ClickedPhoto String
-    | ClickedSize ThumnailSize Bool
+    | ClickedSize Size
     | ClickedSurpireseMe
 
 initialModel : Model 
@@ -35,8 +37,13 @@ initialModel =
         , { url = "2.jpeg" }
         , { url = "3.jpeg" }
         ]
-    , selectImg = "1.jpeg"
-    , chosenSize = (Medium, True)
+        , selectImg = "1.jpeg"
+        , chosenSize = Medium
+        , sizes = 
+            [{size = Small, selected = False}
+            , {size = Medium, selected = True}
+            , {size = Large, selected = False}
+            ]
     }
 
 photoArray: Array Photo
@@ -57,16 +64,11 @@ view model =
             [onClick ClickedSurpireseMe]
             [text "Surprise Me!"]
         , h3 [] [text "Thumnail Size:"]
-        -- verbose code refactored to a Map
-        -- , div [id "choosen-size] [viewSizeChooser Small, viewSizeChooser Medium, viewSizeChooser Large]
         , div [id "choosen-size"] 
-            (List.map 
-                (\s ->  viewSizeChooser s model.chosenSize) [Small, Medium, Large]
-            )
+            (List.map viewSizeChooser  model.sizes)
         , div [ id "thumbnails", class (sizeToClass model.chosenSize) ]
-            -- (List.map (\url -> viewThumbnail model.selectImg url) model.photos)
-            -- becuase of currying and partial application
             (List.map (viewThumbnail model.selectImg) model.photos)
+        , div [] (List.map printTuple model.sizes)
         , img
             [ class "large"
             , src (urlPrefix ++ "large/" ++ model.selectImg)
@@ -74,10 +76,12 @@ view model =
             []
         ]
 
-sizeToClass : (ThumnailSize, Bool) -> String
-sizeToClass size =
-    let (s, _) = size 
-    in
+printTuple : Size -> Html Msg
+printTuple s =
+    Html.p [] [text (sizeToString s.size), text " -> ", text (Debug.toString s.selected)]
+
+sizeToClass : ThumnailSize -> String
+sizeToClass s =
     sizeToString s
 
 
@@ -95,16 +99,17 @@ viewThumbnail isSelected thumb =
         ]
         []
 
-viewSizeChooser : ThumnailSize -> (ThumnailSize, Bool) -> Html Msg
-viewSizeChooser size ( choosenSize, selected ) =
+viewSizeChooser : Size -> Html Msg
+viewSizeChooser size =
     label []
     [ input 
         [type_ "radio"
         , name "size"
         -- , onClick (ClickedSize size)
-        , onCheck (\t -> ClickedSize size t)
-        , checked (if size == choosenSize then selected else False )] []
-    , text (sizeToString size)
+        , onCheck (\t -> ClickedSize {size | selected = t})
+        -- , checked (if size.size == chosenSize then True else False)
+        , checked size.selected] []
+    , text (sizeToString size.size)
     ]
 
 getPhotoUrl : Int -> String
@@ -130,8 +135,15 @@ update msg model =
             { model | selectImg = url }
         ClickedSurpireseMe -> 
             {model | selectImg = "2.jpeg"}
-        ClickedSize size b -> 
-            {model |  chosenSize = (size, b)}
+        ClickedSize size -> 
+            let updateSizes =
+                    List.map 
+                        (\s -> 
+                            if s.size == size.size then size  else {size = s.size,
+                            selected = False}
+                        ) model.sizes
+            in 
+            {model |  chosenSize = size.size, sizes = updateSizes}
 
 
 main : Program () Model Msg
