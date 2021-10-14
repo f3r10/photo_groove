@@ -11,6 +11,7 @@ import Html exposing (label)
 import Html exposing (input)
 import Html exposing (h3)
 import Html.Events exposing (onCheck)
+import Random
 
 
 type ThumnailSize
@@ -22,13 +23,14 @@ type alias Photo = {url : String}
 type alias Size = {size: ThumnailSize, selected: Bool}
 type alias Model =  
     { photos : List Photo
-    , selectImg : String
     , chosenSize: ThumnailSize
-    , sizes: List Size}
+    , sizes: List Size
+    , selectedUrl: String}
 type Msg 
     = ClickedPhoto String
     | ClickedSize Size
     | ClickedSurpireseMe
+    | GotSelectedIndex Int
 
 initialModel : Model 
 initialModel =
@@ -37,13 +39,13 @@ initialModel =
         , { url = "2.jpeg" }
         , { url = "3.jpeg" }
         ]
-        , selectImg = "1.jpeg"
         , chosenSize = Medium
         , sizes = 
             [{size = Small, selected = False}
             , {size = Medium, selected = True}
             , {size = Large, selected = False}
             ]
+        , selectedUrl = "1.jpeg"
     }
 
 photoArray: Array Photo
@@ -67,11 +69,11 @@ view model =
         , div [id "choosen-size"] 
             (List.map viewSizeChooser  model.sizes)
         , div [ id "thumbnails", class (sizeToClass model.chosenSize) ]
-            (List.map (viewThumbnail model.selectImg) model.photos)
+            (List.map (viewThumbnail model.selectedUrl) model.photos)
         , div [] (List.map printTuple model.sizes)
         , img
             [ class "large"
-            , src (urlPrefix ++ "large/" ++ model.selectImg)
+            , src (urlPrefix ++ "large/" ++ model.selectedUrl)
             ]
             []
         ]
@@ -119,6 +121,12 @@ getPhotoUrl index =
         Nothing -> ""
 
 
+-- TODO check appendix B for more information about elm packages
+randomPhotoPicker : Random.Generator Int
+randomPhotoPicker =
+    Random.int 0 (Array.length photoArray - 1)
+
+
 sizeToString : ThumnailSize -> String
 sizeToString size =
     case size of
@@ -128,13 +136,13 @@ sizeToString size =
 
 
 
-update : Msg -> Model -> Model
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         ClickedPhoto url -> 
-            { model | selectImg = url }
+            ( { model | selectedUrl = url }, Cmd.none )
         ClickedSurpireseMe -> 
-            {model | selectImg = "2.jpeg"}
+            (model, Random.generate GotSelectedIndex randomPhotoPicker)
         ClickedSize size -> 
             let updateSizes =
                     List.map 
@@ -143,14 +151,20 @@ update msg model =
                             selected = False}
                         ) model.sizes
             in 
-            {model |  chosenSize = size.size, sizes = updateSizes}
+            ({model |  chosenSize = size.size, sizes = updateSizes}, Cmd.none)
+
+        GotSelectedIndex index -> 
+            ({model | selectedUrl = getPhotoUrl index}, Cmd.none)
 
 
+-- () means no flags whatsoever. What flags will do?
 main : Program () Model Msg
 main =
-    Browser.sandbox
-    { init = initialModel
+    Browser.element
+    -- The second parameter, the command, will run when the page loads
+    { init = \flags ->  ( initialModel, Cmd.none )
     , view = view
     , update = update
+    , subscriptions = \model -> Sub.none
     }
     
