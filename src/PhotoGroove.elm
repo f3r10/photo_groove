@@ -3,14 +3,14 @@ module PhotoGroove exposing (main)
 -- import Html.Attributes exposing (..)
 
 import Browser
-import Html exposing (Html, button, div, h1, h3, img, input, label, text)
-import Html.Attributes exposing (checked, class, classList, id, name, src, type_)
+import Html exposing (Html, button, div, h1, h3, img, input, label, node, text)
+import Html.Attributes as Attr exposing (checked, class, classList, id, max, name, src, title, type_)
 import Html.Events exposing (onCheck, onClick)
 import Http
-import Json.Decode exposing (Decoder, int, string, succeed, list)
+import Json.Decode exposing (Decoder, int, list, string, succeed)
 import Json.Decode.Pipeline exposing (optional, required)
+import Json.Encode as Encode
 import Random
-import Html.Attributes exposing (title)
 
 
 type ThumnailSize
@@ -31,6 +31,8 @@ type alias Photo =
     , title : String
     }
 
+
+
 -- this can go for ever
 -- photoDecoder : Decoder Photo
 -- photoDecoder =
@@ -47,6 +49,7 @@ photoDecoder =
         |> required "url" string
         |> required "size" int
         |> optional "title" string "(untitled)"
+
 
 type alias Size =
     { size : ThumnailSize, selected : Bool }
@@ -65,6 +68,7 @@ type Msg
     | ClickedSurpireseMe
     | GotRandomPhoto Photo
     | GotPhotos (Result Http.Error (List Photo))
+
 
 initialModel : Model
 initialModel =
@@ -104,6 +108,11 @@ viewLoaded photos selectedUrl chosenSize sizes =
     , button
         [ onClick ClickedSurpireseMe ]
         [ text "Surprise Me!" ]
+    , div [ class "filters" ]
+        [ viewFilter "Hue" 0
+        , viewFilter "Ripple" 0
+        , viewFilter "Noise" 0
+        ]
     , h3 [] [ text "Thumnail Size:" ]
     , div [ id "choosen-size" ]
         (List.map viewSizeChooser sizes)
@@ -132,7 +141,7 @@ viewThumbnail : String -> Photo -> Html Msg
 viewThumbnail isSelected thumb =
     img
         [ src (urlPrefix ++ thumb.url)
-        , title(thumb.title ++ "[" ++ String.fromInt thumb.size ++ " KB]")
+        , title (thumb.title ++ "[" ++ String.fromInt thumb.size ++ " KB]")
         , classList
             [ ( "selected"
               , thumb.url
@@ -159,6 +168,24 @@ viewSizeChooser size =
             ]
             []
         , text (sizeToString size.size)
+        ]
+
+
+rangeSlider : List (Html.Attribute msg) -> List (Html msg) -> Html msg
+rangeSlider attributes children =
+    node "range-slider" attributes children
+
+
+viewFilter : String -> Int -> Html Msg
+viewFilter name magnitude =
+    div [ class "filter-slider" ]
+        [ label [] [ text name ]
+        , rangeSlider
+            [ Attr.max "11"
+            , Attr.property "val" (Encode.int magnitude)
+            ]
+            []
+        , label [] [ text (String.fromInt magnitude) ]
         ]
 
 
@@ -233,7 +260,7 @@ initialCmd : Cmd Msg
 initialCmd =
     Http.get
         { url = "http://elm-in-action.com/photos/list.json"
-        , expect = Http.expectJson GotPhotos (list photoDecoder) 
+        , expect = Http.expectJson GotPhotos (list photoDecoder)
         }
 
 
