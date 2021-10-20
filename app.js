@@ -6652,13 +6652,12 @@ var $author$project$PhotoGroove$update = F2(
 					if (responseList.b) {
 						var photos = responseList;
 						var firstPhoto = photos.a;
-						return _Utils_Tuple2(
+						return $author$project$PhotoGroove$applyFilters(
 							_Utils_update(
 								model,
 								{
 									status: A2($author$project$PhotoGroove$Loaded, photos, firstPhoto.url)
-								}),
-							$elm$core$Platform$Cmd$none);
+								}));
 					} else {
 						return _Utils_Tuple2(
 							_Utils_update(
