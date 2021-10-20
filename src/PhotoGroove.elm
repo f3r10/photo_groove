@@ -14,6 +14,9 @@ import Random
 port setFilters : FilterOptions -> Cmd msg
 
 
+port activityChanges : (String -> msg) -> Sub msg
+
+
 type alias FilterOptions =
     { url : String
     , filters : List { name : String, amount : Float }
@@ -64,6 +67,7 @@ type alias Size =
 
 type alias Model =
     { status : Status
+    , activity : String
     , chosenSize : ThumnailSize
     , sizes : List Size
     , hue : Int
@@ -77,6 +81,7 @@ type Msg
     | ClickedSize Size
     | ClickedSurpireseMe
     | GotRandomPhoto Photo
+    | GotActivity String
     | GotPhotos (Result Http.Error (List Photo))
     | SlidHue Int
     | SlidRipple Int
@@ -86,6 +91,7 @@ type Msg
 initialModel : Model
 initialModel =
     { status = Loading
+    , activity = ""
     , chosenSize = Medium
     , sizes =
         [ { size = Small, selected = False }
@@ -124,6 +130,7 @@ viewLoaded photos selectedUrl model =
     , button
         [ onClick ClickedSurpireseMe ]
         [ text "Surprise Me!" ]
+    , div [ class "activity" ] [ text model.activity ]
     , div [ class "filters" ]
         [ viewFilter SlidHue "Hue" model.hue
         , viewFilter SlidRipple "Ripple" model.ripple
@@ -277,6 +284,9 @@ update msg model =
         GotRandomPhoto photo ->
             applyFilters { model | status = selectUrl photo.url model.status }
 
+        GotActivity activity ->
+            ( { model | activity = activity }, Cmd.none )
+
         GotPhotos (Ok responseList) ->
             case responseList of
                 (firstPhoto :: _) as photos ->
@@ -342,16 +352,26 @@ selectUrl url status =
             status
 
 
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    activityChanges GotActivity
 
--- () means no flags whatsoever. What flags will do?
+
+init : Float -> ( Model, Cmd Msg )
+init flags =
+    let
+        activity =
+            "Initializing Pasta v" ++ String.fromFloat flags
+    in
+    -- The second parameter, the command, will run when the page loads
+    ( { initialModel | activity = activity }, initialCmd )
 
 
-main : Program () Model Msg
+main : Program Float Model Msg
 main =
     Browser.element
-        -- The second parameter, the command, will run when the page loads
-        { init = \_ -> ( initialModel, initialCmd )
+        { init = init
         , view = view
         , update = update
-        , subscriptions = \_ -> Sub.none
+        , subscriptions = subscriptions
         }
