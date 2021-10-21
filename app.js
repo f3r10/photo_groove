@@ -5402,6 +5402,10 @@ var $elm$core$Task$perform = F2(
 				A2($elm$core$Task$map, toMessage, task)));
 	});
 var $elm$browser$Browser$element = _Browser_element;
+var $author$project$PhotoGroove$Errored = function (a) {
+	return {$: 'Errored', a: a};
+};
+var $elm$json$Json$Decode$decodeValue = _Json_run;
 var $elm$json$Json$Decode$float = _Json_decodeFloat;
 var $elm$core$String$fromFloat = _String_fromNumber;
 var $author$project$PhotoGroove$GotPhotos = function (a) {
@@ -6203,7 +6207,6 @@ var $elm$json$Json$Decode$int = _Json_decodeInt;
 var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom = $elm$json$Json$Decode$map2($elm$core$Basics$apR);
 var $elm$json$Json$Decode$field = _Json_decodeField;
 var $elm$json$Json$Decode$andThen = _Json_andThen;
-var $elm$json$Json$Decode$decodeValue = _Json_run;
 var $elm$json$Json$Decode$fail = _Json_fail;
 var $elm$json$Json$Decode$null = _Json_decodeNull;
 var $elm$json$Json$Decode$oneOf = _Json_oneOf;
@@ -6299,23 +6302,35 @@ var $author$project$PhotoGroove$initialModel = {
 		]),
 	status: $author$project$PhotoGroove$Loading
 };
+var $elm$core$Platform$Cmd$batch = _Platform_batch;
+var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $author$project$PhotoGroove$init = function (flags) {
-	var activity = 'Initializing Pasta v' + $elm$core$String$fromFloat(flags);
-	return _Utils_Tuple2(
-		_Utils_update(
-			$author$project$PhotoGroove$initialModel,
-			{activity: activity}),
-		$author$project$PhotoGroove$initialCmd);
+	var _v0 = A2($elm$json$Json$Decode$decodeValue, $elm$json$Json$Decode$float, flags);
+	if (_v0.$ === 'Ok') {
+		var data = _v0.a;
+		var activity = 'Initializing Pasta v' + $elm$core$String$fromFloat(data);
+		return _Utils_Tuple2(
+			_Utils_update(
+				$author$project$PhotoGroove$initialModel,
+				{activity: activity}),
+			$author$project$PhotoGroove$initialCmd);
+	} else {
+		var error = _v0.a;
+		return _Utils_Tuple2(
+			_Utils_update(
+				$author$project$PhotoGroove$initialModel,
+				{
+					status: $author$project$PhotoGroove$Errored('Server error')
+				}),
+			$elm$core$Platform$Cmd$none);
+	}
 };
 var $author$project$PhotoGroove$GotActivity = function (a) {
 	return {$: 'GotActivity', a: a};
 };
-var $author$project$PhotoGroove$activityChanges = _Platform_incomingPort('activityChanges', $elm$json$Json$Decode$string);
+var $author$project$PhotoGroove$activityChanges = _Platform_incomingPort('activityChanges', $elm$json$Json$Decode$value);
 var $author$project$PhotoGroove$subscriptions = function (model) {
 	return $author$project$PhotoGroove$activityChanges($author$project$PhotoGroove$GotActivity);
-};
-var $author$project$PhotoGroove$Errored = function (a) {
-	return {$: 'Errored', a: a};
 };
 var $author$project$PhotoGroove$GotRandomPhoto = function (a) {
 	return {$: 'GotRandomPhoto', a: a};
@@ -6324,8 +6339,6 @@ var $author$project$PhotoGroove$Loaded = F2(
 	function (a, b) {
 		return {$: 'Loaded', a: a, b: b};
 	});
-var $elm$core$Platform$Cmd$batch = _Platform_batch;
-var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $elm$json$Json$Encode$float = _Json_wrap;
 var $elm$json$Json$Encode$list = F2(
 	function (func, entries) {
@@ -6664,11 +6677,24 @@ var $author$project$PhotoGroove$update = F2(
 						}));
 			case 'GotActivity':
 				var activity = msg.a;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{activity: activity}),
-					$elm$core$Platform$Cmd$none);
+				var _v3 = A2($elm$json$Json$Decode$decodeValue, $elm$json$Json$Decode$string, activity);
+				if (_v3.$ === 'Ok') {
+					var data = _v3.a;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{activity: data}),
+						$elm$core$Platform$Cmd$none);
+				} else {
+					var error = _v3.a;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{
+								status: $author$project$PhotoGroove$Errored('Server error')
+							}),
+						$elm$core$Platform$Cmd$none);
+				}
 			case 'GotPhotos':
 				if (msg.a.$ === 'Ok') {
 					var responseList = msg.a.a;
@@ -7069,4 +7095,4 @@ var $author$project$PhotoGroove$view = function (model) {
 };
 var $author$project$PhotoGroove$main = $elm$browser$Browser$element(
 	{init: $author$project$PhotoGroove$init, subscriptions: $author$project$PhotoGroove$subscriptions, update: $author$project$PhotoGroove$update, view: $author$project$PhotoGroove$view});
-_Platform_export({'PhotoGroove':{'init':$author$project$PhotoGroove$main($elm$json$Json$Decode$float)(0)}});}(this));
+_Platform_export({'PhotoGroove':{'init':$author$project$PhotoGroove$main($elm$json$Json$Decode$value)(0)}});}(this));

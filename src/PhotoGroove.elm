@@ -5,16 +5,17 @@ import Html exposing (Attribute, Html, button, canvas, div, h1, h3, img, input, 
 import Html.Attributes as Attr exposing (checked, class, classList, id, max, name, src, title, type_)
 import Html.Events exposing (on, onCheck, onClick)
 import Http
-import Json.Decode exposing (Decoder, at, int, list, string, succeed)
+import Json.Decode exposing (Decoder, at, int, list, string, succeed, Value)
 import Json.Decode.Pipeline exposing (optional, required)
 import Json.Encode as Encode
 import Random
+import Json.Decode exposing (float)
 
 
 port setFilters : FilterOptions -> Cmd msg
 
 
-port activityChanges : (String -> msg) -> Sub msg
+port activityChanges : (Value -> msg) -> Sub msg
 
 
 type alias FilterOptions =
@@ -52,7 +53,6 @@ type alias Photo =
 --         (field "url" int)
 --         (field "title" string)
 
-
 photoDecoder : Decoder Photo
 photoDecoder =
     succeed Photo
@@ -81,7 +81,7 @@ type Msg
     | ClickedSize Size
     | ClickedSurpireseMe
     | GotRandomPhoto Photo
-    | GotActivity String
+    | GotActivity Value
     | GotPhotos (Result Http.Error (List Photo))
     | SlidHue Int
     | SlidRipple Int
@@ -285,7 +285,11 @@ update msg model =
             applyFilters { model | status = selectUrl photo.url model.status }
 
         GotActivity activity ->
-            ( { model | activity = activity }, Cmd.none )
+            case Json.Decode.decodeValue string activity of
+                Ok data ->
+                    ( { model | activity = data }, Cmd.none )
+                Err error ->
+                    ( { model | status = Errored "Server error" }, Cmd.none )
 
         GotPhotos (Ok responseList) ->
             case responseList of
@@ -306,7 +310,6 @@ update msg model =
 
         SlidNoise noise ->
             applyFilters { model | noise = noise }
-
 
 applyFilters : Model -> ( Model, Cmd Msg )
 applyFilters model =
@@ -357,17 +360,26 @@ subscriptions model =
     activityChanges GotActivity
 
 
-init : Float -> ( Model, Cmd Msg )
+            -- case Json.Decode.decodeValue string activity of
+            --     Ok data ->
+            --         ( { model | activity = data }, Cmd.none )
+            --     Err error ->
+            --         ( { model | status = Errored "Server error" }, Cmd.none )
+init : Value -> ( Model, Cmd Msg )
 init flags =
-    let
-        activity =
-            "Initializing Pasta v" ++ String.fromFloat flags
-    in
-    -- The second parameter, the command, will run when the page loads
-    ( { initialModel | activity = activity }, initialCmd )
+    case Json.Decode.decodeValue float flags of
+        Ok data ->
+            let
+                activity =
+                    "Initializing Pasta v" ++ String.fromFloat data
+            in
+            -- The second parameter, the command, will run when the page loads
+            ( { initialModel | activity = activity }, initialCmd )
+        Err error ->
+            ( { initialModel | status = Errored "Server error" }, Cmd.none )
 
 
-main : Program Float Model Msg
+main : Program Value Model Msg
 main =
     Browser.element
         { init = init
