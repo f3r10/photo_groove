@@ -1,0 +1,22 @@
+{
+  "name": "photo_groove",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:f3r10/photo_groove.git",
+  "author": "Fernando Ledesma <frledesma@outlook.com>",
+  "license": "MIT",
+  "scripts": {
+    "compile": "elm make src/PhotoGroove.elm --output public/app.js",
+    "server": "sirv --dev public",
+    "dev": "run-p watch server",
+    "watch": "watch 'yarn run compile' src"
+  },
+  "dependencies": {
+    "sirv-cli": "^1.0.14"
+  },
+  "devDependencies": {
+    "elm": "^0.19.1-5",
+    "npm-run-all": "^4.1.5",
+    "watch": "^1.0.2"
+  }
+}
