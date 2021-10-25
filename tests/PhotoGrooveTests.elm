@@ -1,23 +1,22 @@
 module PhotoGrooveTests exposing (..)
 
 import Expect exposing (Expectation)
-import Json.Decode exposing (decodeString)
+import Fuzz exposing (Fuzzer, int, list, string)
+import Json.Decode exposing (decodeValue)
+import Json.Encode as Encode
 import Fuzz exposing (Fuzzer, int, list, string)
 import PhotoGroove
 import Test exposing (..)
 
 decoderTest : Test
 decoderTest =
-    test "title defaults to (untitle)" 
-        (\_ ->
-            let
-                jsonText = 
-                    """
-                    {"url": "fruits.com", "size": 5}
-                    """
-            in
-            decodeString PhotoGroove.photoDecoder jsonText
+    fuzz2 string int "title defaults to (untitle)" <|
+        \url size ->
+            [("url", Encode.string url)
+            , ("size", Encode.int size )
+            ]
+            |> Encode.object
+            |> decodeValue PhotoGroove.photoDecoder
             |> Result.map (\photo -> photo.title)
             |> Expect.equal
-                (Ok "(untitled)")
-            )
+            (Ok "(untitled)") 
