@@ -1,15 +1,21 @@
-port module PhotoGroove exposing (main, photoDecoder, initialModel, update, Msg(..))
+port module PhotoGroove exposing
+    ( Model
+    , Msg(..)
+    , initialModel
+    , main
+    , photoDecoder
+    , update
+    )
 
 import Browser
 import Html exposing (Attribute, Html, button, canvas, div, h1, h3, img, input, label, node, text)
 import Html.Attributes as Attr exposing (checked, class, classList, id, max, name, src, title, type_)
 import Html.Events exposing (on, onCheck, onClick)
 import Http
-import Json.Decode exposing (Decoder, at, int, list, string, succeed, Value)
+import Json.Decode exposing (Decoder, Value, at, float, int, list, string, succeed)
 import Json.Decode.Pipeline exposing (optional, required)
 import Json.Encode as Encode
 import Random
-import Json.Decode exposing (float)
 
 
 port setFilters : FilterOptions -> Cmd msg
@@ -52,6 +58,7 @@ type alias Photo =
 --         (field "url" string)
 --         (field "url" int)
 --         (field "title" string)
+
 
 photoDecoder : Decoder Photo
 photoDecoder =
@@ -288,6 +295,7 @@ update msg model =
             case Json.Decode.decodeValue string activity of
                 Ok data ->
                     ( { model | activity = data }, Cmd.none )
+
                 Err error ->
                     ( { model | status = Errored "Server error" }, Cmd.none )
 
@@ -310,6 +318,7 @@ update msg model =
 
         SlidNoise noise ->
             applyFilters { model | noise = noise }
+
 
 applyFilters : Model -> ( Model, Cmd Msg )
 applyFilters model =
@@ -360,11 +369,14 @@ subscriptions model =
     activityChanges GotActivity
 
 
-            -- case Json.Decode.decodeValue string activity of
-            --     Ok data ->
-            --         ( { model | activity = data }, Cmd.none )
-            --     Err error ->
-            --         ( { model | status = Errored "Server error" }, Cmd.none )
+
+-- case Json.Decode.decodeValue string activity of
+--     Ok data ->
+--         ( { model | activity = data }, Cmd.none )
+--     Err error ->
+--         ( { model | status = Errored "Server error" }, Cmd.none )
+
+
 init : Value -> ( Model, Cmd Msg )
 init flags =
     case Json.Decode.decodeValue float flags of
@@ -375,6 +387,7 @@ init flags =
             in
             -- The second parameter, the command, will run when the page loads
             ( { initialModel | activity = activity }, initialCmd )
+
         Err error ->
             ( { initialModel | status = Errored "Server error" }, Cmd.none )
 
