@@ -20,3 +20,13 @@ decoderTest =
             |> Result.map (\photo -> photo.title)
             |> Expect.equal
             (Ok "(untitled)") 
+
+slidHueSetsHue : Test
+slidHueSetsHue =
+    fuzz int "SlidHue sets the hue" <|
+        \amount ->
+            PhotoGroove.initialModel
+            |> PhotoGroove.update (PhotoGroove.SlidHue amount)
+            |> Tuple.first
+            |> .hue
+            |> Expect.equal amount
