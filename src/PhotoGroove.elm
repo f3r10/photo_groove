@@ -1,10 +1,15 @@
 port module PhotoGroove exposing
     ( Model
     , Msg(..)
+    , Photo
+    , Status(..)
     , initialModel
     , main
     , photoDecoder
     , update
+    , urlPrefix
+    , view
+    , photoFromUrl
     )
 
 import Browser
@@ -47,6 +52,10 @@ type alias Photo =
     , size : Int
     , title : String
     }
+
+photoFromUrl : String -> Photo
+photoFromUrl url = 
+    { url = url, size = 0, title = ""}
 
 
 
