@@ -6,16 +6,22 @@ port module PhotoGroove exposing
     , initialModel
     , main
     , photoDecoder
+    , photoFromUrl
     , update
     , urlPrefix
     , view
-    , photoFromUrl
     )
 
 import Browser
-import Html exposing (Attribute, Html, button, canvas, div, h1, h3, img, input, label, node, text)
-import Html.Attributes as Attr exposing (checked, class, classList, id, max, name, src, title, type_)
-import Html.Events exposing (on, onCheck, onClick)
+import Element exposing (Element, el, fill, layout, none, padding, px, rgb, rgb255, row, spacing, width)
+import Element.Background as Bg
+import Element.Border as Border
+import Element.Events as Events
+import Element.Font as Font
+import Element.Input as Input
+import Html exposing (Attribute, Html, canvas, node, text)
+import Html.Attributes as Attr exposing (id, name)
+import Html.Events exposing (on)
 import Http
 import Json.Decode exposing (Decoder, Value, at, float, int, list, string, succeed)
 import Json.Decode.Pipeline exposing (optional, required)
@@ -53,20 +59,10 @@ type alias Photo =
     , title : String
     }
 
+
 photoFromUrl : String -> Photo
-photoFromUrl url = 
-    { url = url, size = 0, title = ""}
-
-
-
--- this can go for ever
--- photoDecoder : Decoder Photo
--- photoDecoder =
---     map3
---         (\url size title -> {url = url, size = size, title = title})
---         (field "url" string)
---         (field "url" int)
---         (field "title" string)
+photoFromUrl url =
+    { url = url, size = 0, title = "" }
 
 
 photoDecoder : Decoder Photo
@@ -127,37 +123,81 @@ urlPrefix =
 
 view : Model -> Html Msg
 view model =
-    -- <| is the same as $ on haskell
-    div [ class "content" ] <|
-        case model.status of
-            Loaded photos selectedUrl ->
-                viewLoaded photos selectedUrl model
-
-            Loading ->
-                []
-
-            Errored errorMessage ->
-                [ text ("Error:" ++ errorMessage) ]
-
-
-viewLoaded : List Photo -> String -> Model -> List (Html Msg)
-viewLoaded photos selectedUrl model =
-    [ h1 [] [ text "Photo Groove" ]
-    , button
-        [ onClick ClickedSurpireseMe ]
-        [ text "Surprise Me!" ]
-    , div [ class "activity" ] [ text model.activity ]
-    , div [ class "filters" ]
-        [ viewFilter SlidHue "Hue" model.hue
-        , viewFilter SlidRipple "Ripple" model.ripple
-        , viewFilter SlidNoise "Noise" model.noise
+    layout
+        [ Bg.color <| rgb255 44 44 44
+        , Font.color <| rgb255 250 250 250
+        , Font.family [ Font.typeface "Verdana" ]
         ]
-    , h3 [] [ text "Thumnail Size:" ]
-    , div [ id "choosen-size" ]
-        (List.map viewSizeChooser model.sizes)
-    , div [ id "thumbnails", class (sizeToClass model.chosenSize) ]
-        (List.map (viewThumbnail selectedUrl) photos)
-    , canvas [ id "main-canvas", class "large" ] []
+    <|
+        Element.column
+            [ width <| px 960
+
+            -- , Element.padding 40
+            , Element.height fill
+            , Element.centerX
+            , Element.centerY
+            ]
+        <|
+            case model.status of
+                Loaded photos selectedUrl ->
+                    -- viewLoaded photos selectedUrl model
+                    -- [el [] <| Element.text "Hello", el [] <| Element.text "world"]
+                    viewLoaded photos selectedUrl model
+
+                Loading ->
+                    [ none ]
+
+                Errored errorMessage ->
+                    -- el [] [ text ("Error:" ++ errorMessage) ]
+                    [ none ]
+
+
+viewLoaded : List Photo -> String -> Model -> List (Element Msg)
+viewLoaded photos selectedUrl model =
+    [ Element.row
+        [ Element.width Element.fill ]
+        [ el [ Font.size 32, Font.color <| rgb255 96 181 204 ] <| Element.text "Photo Groove"
+        , el [ Element.alignRight ] <| Element.text model.activity
+        ]
+    , Element.row
+        [ Element.width Element.fill ]
+        [ viewSizeChooser model
+        , Element.row [ Element.alignRight ]
+            [ Element.wrappedRow [ Element.width <| Element.px 318 ] <|
+                [ viewFilter SlidHue "Hue" model.hue
+                , viewFilter SlidRipple "Ripple" model.ripple
+                , viewFilter SlidNoise "Noise" model.noise
+                ]
+            , el [] <|
+                Input.button
+                    [ Element.paddingXY 30 10
+                    , Bg.color <| rgb255 96 181 204
+                    , Font.color <| rgb255 44 44 44
+                    , Font.size 24
+                    , Border.width 0
+                    ]
+                    { onPress = Just ClickedSurpireseMe, label = Element.text "Surprise Me!" }
+            ]
+        ]
+    , Element.row
+        [ Element.height Element.fill, Element.width Element.fill ]
+        [ Element.wrappedRow
+            [ Element.alignTop
+            , Element.spacingXY 10 10
+            , Element.width <| Element.fillPortion 5
+            ]
+            (List.map (viewThumbnail selectedUrl model.chosenSize) photos)
+        , Element.column
+            [ Element.height Element.fill
+            , Element.width <| Element.fillPortion 6
+            ]
+            [ el
+                [ Element.alignRight, Element.width <| Element.px 500 ]
+              <|
+                Element.html <|
+                    canvas [ id "main-canvas" ] []
+            ]
+        ]
 
     -- , div [] (List.map printTuple model.sizes)
     ]
@@ -173,56 +213,89 @@ sizeToClass s =
     sizeToString s
 
 
-viewThumbnail : String -> Photo -> Html Msg
-viewThumbnail isSelected thumb =
-    img
-        [ src (urlPrefix ++ thumb.url)
-        , title (thumb.title ++ "[" ++ String.fromInt thumb.size ++ " KB]")
-        , classList
-            [ ( "selected"
-              , thumb.url
-                    == isSelected
-              )
-            ]
-        , onClick (ClickedPhoto thumb.url)
+choosenSizeToPixel : ThumnailSize -> Int
+choosenSizeToPixel size =
+    case size of
+        Small ->
+            50
+
+        Medium ->
+            100
+
+        Large ->
+            200
+
+
+selectedImageEffect : String -> String -> List (Element.Attribute msg)
+selectedImageEffect url isSelected =
+    if url == isSelected then
+        [ Border.color <| rgb255 96 181 204
+        , Border.solid
+        , Border.width 6
+        , Element.spacingXY 0 0
         ]
-        []
 
-
-viewSizeChooser : Size -> Html Msg
-viewSizeChooser size =
-    label []
-        [ input
-            [ type_ "radio"
-            , name "size"
-
-            -- , onClick (ClickedSize size)
-            , onCheck (\t -> ClickedSize { size | selected = t })
-
-            -- , checked (if size.size == chosenSize then True else False)
-            , checked size.selected
-            ]
-            []
-        , text (sizeToString size.size)
+    else
+        [ Border.color <| rgb255 255 255 255
+        , Border.solid
+        , Border.width 1
         ]
 
 
-rangeSlider : List (Html.Attribute msg) -> List (Html msg) -> Html msg
+viewThumbnail : String -> ThumnailSize -> Photo -> Element Msg
+viewThumbnail isSelected choosenSize thumb =
+    Element.image
+        ([ Element.width <| Element.px (choosenSizeToPixel choosenSize)
+         , Events.onClick (ClickedPhoto thumb.url)
+         ]
+            ++ selectedImageEffect thumb.url isSelected
+        )
+        { src = urlPrefix ++ thumb.url
+        , description =
+            thumb.title ++ "[" ++ String.fromInt thumb.size ++ " KB]"
+        }
+
+
+viewSizeChooser : Model -> Element Msg
+viewSizeChooser model =
+    Input.radioRow
+        [ Element.padding 10, Element.spacing 30 ]
+        { onChange = \new -> ClickedSize { size = new, selected = True }
+        , selected = Just model.chosenSize
+        , label = Input.labelAbove [] (Element.text "Thumnail Size:")
+        , options =
+            List.map
+                (\size ->
+                    Input.option size.size
+                        (Element.text <|
+                            sizeToClass
+                                size.size
+                        )
+                )
+                model.sizes
+        }
+
+
+rangeSlider : List (Html.Attribute msg) -> List (Html msg) -> Element msg
 rangeSlider attributes children =
-    node "range-slider" attributes children
+    Element.html <| node "range-slider" attributes children
 
 
-viewFilter : (Int -> Msg) -> String -> Int -> Html Msg
+viewFilter : (Int -> Msg) -> String -> Int -> Element Msg
 viewFilter toMsg name magnitude =
-    div [ class "filter-slider" ]
-        [ label [] [ text name ]
-        , rangeSlider
-            [ Attr.max "11"
-            , Attr.property "val" (Encode.int magnitude)
-            , onSlide toMsg
+    Element.row []
+        [ Element.el [] <| Element.text name
+        , Element.el
+            [ Element.width <| Element.px 120
+            , Element.spacing 10
             ]
-            []
-        , label [] [ text (String.fromInt magnitude) ]
+            (rangeSlider
+                [ Attr.max "11"
+                , Attr.property "val" (Encode.int magnitude)
+                , onSlide toMsg
+                ]
+                []
+            )
         ]
 
 
@@ -244,18 +317,6 @@ onSlide toMsg =
     at [ "detail", "userSlidTo" ] int
         |> Json.Decode.map toMsg
         |> on "slide"
-
-
-
--- let
---     detailUserSlidTo : Decoder Int
---     detailUserSlidTo =
---         at [ "detail", "userSlidTo" ] int
---     msgDecoder : Decoder msg
---     msgDecoder =
---         Json.Decode.map toMsg detailUserSlidTo
--- in
--- on "slide" msgDecoder
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -376,14 +437,6 @@ selectUrl url status =
 subscriptions : Model -> Sub Msg
 subscriptions model =
     activityChanges GotActivity
-
-
-
--- case Json.Decode.decodeValue string activity of
---     Ok data ->
---         ( { model | activity = data }, Cmd.none )
---     Err error ->
---         ( { model | status = Errored "Server error" }, Cmd.none )
 
 
 init : Value -> ( Model, Cmd Msg )

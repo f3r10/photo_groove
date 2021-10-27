@@ -12,6 +12,12 @@ class RangeSlider extends HTMLElement {
       grid: false,
     });
 
+    var a = rangeSliderNode.getElementsByClassName("jsr_label");
+    console.log("jsr_label", typeof a);
+    for (let i = 0; i < a.length; i++) {
+      a[i].style["display"] = "none";
+    }
+
     jsr.addEventListener("update", function (elem, value) {
       var event = new CustomEvent("slide", {
         detail: { userSlidTo: value },
