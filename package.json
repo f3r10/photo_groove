@@ -5,8 +5,10 @@
   "repository": "git@github.com:f3r10/photo_groove.git",
   "author": "Fernando Ledesma <frledesma@outlook.com>",
   "license": "MIT",
+  "type": "module",
   "scripts": {
     "compile": "elm make src/PhotoGroove.elm --output public/app.js",
+    "compile:css": "mkdir -p gen && node setup_script.js",
     "server": "sirv --dev public",
     "dev": "run-p watch server",
     "watch": "watch 'yarn run compile' src"
@@ -15,8 +17,14 @@
     "sirv-cli": "^1.0.14"
   },
   "devDependencies": {
+    "autoprefixer": "^10.4.0",
     "elm": "^0.19.1-5",
+    "elm-tailwind-modules": "^0.3.2",
     "npm-run-all": "^4.1.5",
+    "postcss": "^8.3.11",
+    "postcss-cli": "^9.0.1",
+    "postcss-import": "^14.0.2",
+    "tailwindcss": "^2.2.17",
     "watch": "^1.0.2"
   }
 }
