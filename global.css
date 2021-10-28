@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body {
+  background-color: rgb(44, 44, 44);
+}
+
+range-slider .jsr {
+  margin: 0;
+}
+
+range-slider .jsr_label {
+  display: none;
+}

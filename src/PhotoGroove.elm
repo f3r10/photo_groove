@@ -6,21 +6,22 @@ port module PhotoGroove exposing
     , initialModel
     , main
     , photoDecoder
+    , photoFromUrl
     , update
     , urlPrefix
     , view
-    , photoFromUrl
     )
+
+-- import Html exposing (Attribute, Html, button, canvas, div, h1, h3, img, input, label, node, text)
+-- import Html.Attributes as Attr exposing (checked, class, classList, id, max, name, src, title, type_)
+-- import Html.Events exposing (on, onCheck, onClick)
 
 import Browser
 import Css
 import Css.Global
 import Html.Styled as Html exposing (Html)
-import Html.Styled.Events as Events
 import Html.Styled.Attributes as Attr
--- import Html exposing (Attribute, Html, button, canvas, div, h1, h3, img, input, label, node, text)
--- import Html.Attributes as Attr exposing (checked, class, classList, id, max, name, src, title, type_)
--- import Html.Events exposing (on, onCheck, onClick)
+import Html.Styled.Events as Events
 import Http
 import Json.Decode exposing (Decoder, Value, at, float, int, list, string, succeed)
 import Json.Decode.Pipeline exposing (optional, required)
@@ -60,9 +61,10 @@ type alias Photo =
     , title : String
     }
 
+
 photoFromUrl : String -> Photo
-photoFromUrl url = 
-    { url = url, size = 0, title = ""}
+photoFromUrl url =
+    { url = url, size = 0, title = "" }
 
 
 
@@ -134,38 +136,55 @@ urlPrefix =
 
 view : Model -> Html Msg
 view model =
-    Html.div [ Attr.css [Tw.bg_gray_50] ] <|
-        case model.status of
-            Loaded photos selectedUrl ->
-                viewLoaded photos selectedUrl model
+    Html.div [ Attr.css [ Css.backgroundColor <| Css.rgb 44 44 44, Tw.text_white ] ] <|
+        let
+            view_ =
+                case model.status of
+                    Loaded photos selectedUrl ->
+                        viewLoaded photos selectedUrl model
 
-            Loading ->
-                []
+                    Loading ->
+                        []
 
-            Errored errorMessage ->
-                [ Html.text ("Error:" ++ errorMessage) ]
+                    Errored errorMessage ->
+                        [ Html.text ("Error:" ++ errorMessage) ]
+        in
+        Css.Global.global Tw.globalStyles :: view_
 
 
 viewLoaded : List Photo -> String -> Model -> List (Html Msg)
 viewLoaded photos selectedUrl model =
-    [ Html.h1 [] [ Html.text "Photo Groove" ]
-    , Html.button
-        [ Events.onClick ClickedSurpireseMe ]
-        [ Html.text "Surprise Me!" ]
-    , Html.div [  ] [ Html.text model.activity ]
-    , Html.div [  ]
-        [ viewFilter SlidHue "Hue" model.hue
-        , viewFilter SlidRipple "Ripple" model.ripple
-        , viewFilter SlidNoise "Noise" model.noise
-        ]
-    , Html.h3 [] [ Html.text "Thumnail Size:" ]
-    , Html.div [  ]
-        (List.map viewSizeChooser model.sizes)
-    , Html.div [  ]
-        (List.map (viewThumbnail selectedUrl) photos)
-    , Html.canvas [ Attr.id "main-canvas", Attr.class "large" ] []
+    [ Html.div [ Attr.css [ Tw.flex, Tw.my_8, Tw.justify_center, Tw.items_center ] ] <|
+        [ Html.div [ Attr.css [ Tw.w_3over4 ] ] <|
+            [ Html.div [ Attr.css [ Tw.flex, Tw.items_center, Tw.justify_between ] ] <|
+                [ Html.h1 [ Attr.css [ Tw.text_4xl, Tw.text_gv_primary, Tw.font_bold ] ] [ Html.text "Photo Groove" ]
+                , Html.div [ Attr.css [] ] [ Html.text model.activity ]
+                ]
+            , Html.div [ Attr.css [ Tw.flex, Tw.justify_between] ]
+                [ Html.div [Attr.css [ Tw.flex, Tw.flex_col, Tw.w_full]]
+                    [ Html.h3 [] [ Html.text "Thumnail Size:" ]
+                    , Html.div []
+                        (List.map viewSizeChooser model.sizes)
+                    ]
+                , Html.div [Attr.css [ Tw.flex, Tw.w_full, Tw.justify_between, Tw.items_center]]
+                    [ Html.div [Attr.css [ Tw.flex, Tw.flex_col, Tw.w_4over5]]
+                        [ viewFilter SlidHue "Hue" model.hue
+                        , viewFilter SlidRipple "Ripple" model.ripple
+                        , viewFilter SlidNoise "Noise" model.noise
+                        ]
+                    , Html.button
+                        [ Events.onClick ClickedSurpireseMe
+                        , Attr.css [Tw.p_4, Tw.bg_gv_primary, Tw.w_2over4, Tw.text_black, Tw.text_2xl, Css.hover [Tw.bg_white] ]]
+                        [ Html.text "Surprise Me!" ]
+                    ]
+                ]
 
-    -- , div [] (List.map printTuple model.sizes)
+            -- , Html.div []
+            --     (List.map (viewThumbnail selectedUrl) photos)
+            -- , Html.canvas [ Attr.id "main-canvas", Attr.class "large" ] []
+            -- , div [] (List.map printTuple model.sizes)
+            ]
+        ]
     ]
 
 
@@ -220,11 +239,12 @@ rangeSlider attributes children =
 
 viewFilter : (Int -> Msg) -> String -> Int -> Html Msg
 viewFilter toMsg name magnitude =
-    Html.div [ Attr.class "filter-slider" ]
-        [ Html.label [] [ Html.text name ]
+    Html.div [ Attr.css [ Tw.flex] ]
+        [ Html.label [Attr.css [Tw.w_1over6, Tw.mr_4]] [ Html.text name ]
         , rangeSlider
             [ Attr.max "11"
             , Attr.property "val" (Encode.int magnitude)
+            , Attr.css [Tw.w_40, Tw.mr_1]
             , onSlide toMsg
             ]
             []
