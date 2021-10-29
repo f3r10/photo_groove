@@ -9539,8 +9539,26 @@ var $author$project$Tailwind$Utilities$bg_white = $rtfeldman$elm_css$Css$batch(
 			A2($rtfeldman$elm_css$Css$property, 'background-color', 'rgba(255, 255, 255, var(--tw-bg-opacity))')
 		]));
 var $rtfeldman$elm_css$Html$Styled$button = $rtfeldman$elm_css$Html$Styled$node('button');
+var $rtfeldman$elm_css$Html$Styled$canvas = $rtfeldman$elm_css$Html$Styled$node('canvas');
+var $rtfeldman$elm_css$VirtualDom$Styled$property = F2(
+	function (key, value) {
+		return A3(
+			$rtfeldman$elm_css$VirtualDom$Styled$Attribute,
+			A2($elm$virtual_dom$VirtualDom$property, key, value),
+			_List_Nil,
+			'');
+	});
+var $rtfeldman$elm_css$Html$Styled$Attributes$stringProperty = F2(
+	function (key, string) {
+		return A2(
+			$rtfeldman$elm_css$VirtualDom$Styled$property,
+			key,
+			$elm$json$Json$Encode$string(string));
+	});
+var $rtfeldman$elm_css$Html$Styled$Attributes$class = $rtfeldman$elm_css$Html$Styled$Attributes$stringProperty('className');
 var $author$project$Tailwind$Utilities$flex = A2($rtfeldman$elm_css$Css$property, 'display', 'flex');
 var $author$project$Tailwind$Utilities$flex_col = A2($rtfeldman$elm_css$Css$property, 'flex-direction', 'column');
+var $author$project$Tailwind$Utilities$flex_wrap = A2($rtfeldman$elm_css$Css$property, 'flex-wrap', 'wrap');
 var $author$project$Tailwind$Utilities$font_bold = A2($rtfeldman$elm_css$Css$property, 'font-weight', '700');
 var $rtfeldman$elm_css$Html$Styled$h1 = $rtfeldman$elm_css$Html$Styled$node('h1');
 var $rtfeldman$elm_css$Html$Styled$h3 = $rtfeldman$elm_css$Html$Styled$node('h3');
@@ -9556,9 +9574,11 @@ var $rtfeldman$elm_css$Css$pseudoClass = function (_class) {
 		$rtfeldman$elm_css$Css$Structure$PseudoClassSelector(_class));
 };
 var $rtfeldman$elm_css$Css$hover = $rtfeldman$elm_css$Css$pseudoClass('hover');
+var $rtfeldman$elm_css$Html$Styled$Attributes$id = $rtfeldman$elm_css$Html$Styled$Attributes$stringProperty('id');
 var $author$project$Tailwind$Utilities$items_center = A2($rtfeldman$elm_css$Css$property, 'align-items', 'center');
 var $author$project$Tailwind$Utilities$justify_between = A2($rtfeldman$elm_css$Css$property, 'justify-content', 'space-between');
 var $author$project$Tailwind$Utilities$justify_center = A2($rtfeldman$elm_css$Css$property, 'justify-content', 'center');
+var $author$project$Tailwind$Utilities$mt_4 = A2($rtfeldman$elm_css$Css$property, 'margin-top', '1rem');
 var $author$project$Tailwind$Utilities$my_8 = $rtfeldman$elm_css$Css$batch(
 	_List_fromArray(
 		[
@@ -9591,6 +9611,7 @@ var $rtfeldman$elm_css$Html$Styled$Events$onClick = function (msg) {
 		$elm$json$Json$Decode$succeed(msg));
 };
 var $author$project$Tailwind$Utilities$p_4 = A2($rtfeldman$elm_css$Css$property, 'padding', '1rem');
+var $author$project$Tailwind$Utilities$self_start = A2($rtfeldman$elm_css$Css$property, 'align-self', 'flex-start');
 var $author$project$Tailwind$Utilities$text_2xl = $rtfeldman$elm_css$Css$batch(
 	_List_fromArray(
 		[
@@ -9617,21 +9638,6 @@ var $author$project$Tailwind$Utilities$text_gv_primary = $rtfeldman$elm_css$Css$
 		]));
 var $elm$json$Json$Encode$int = _Json_wrap;
 var $rtfeldman$elm_css$Html$Styled$label = $rtfeldman$elm_css$Html$Styled$node('label');
-var $rtfeldman$elm_css$VirtualDom$Styled$property = F2(
-	function (key, value) {
-		return A3(
-			$rtfeldman$elm_css$VirtualDom$Styled$Attribute,
-			A2($elm$virtual_dom$VirtualDom$property, key, value),
-			_List_Nil,
-			'');
-	});
-var $rtfeldman$elm_css$Html$Styled$Attributes$stringProperty = F2(
-	function (key, string) {
-		return A2(
-			$rtfeldman$elm_css$VirtualDom$Styled$property,
-			key,
-			$elm$json$Json$Encode$string(string));
-	});
 var $rtfeldman$elm_css$Html$Styled$Attributes$max = $rtfeldman$elm_css$Html$Styled$Attributes$stringProperty('max');
 var $author$project$Tailwind$Utilities$mr_1 = A2($rtfeldman$elm_css$Css$property, 'margin-right', '0.25rem');
 var $author$project$Tailwind$Utilities$mr_4 = A2($rtfeldman$elm_css$Css$property, 'margin-right', '1rem');
@@ -9721,6 +9727,7 @@ var $rtfeldman$elm_css$Html$Styled$Attributes$boolProperty = F2(
 	});
 var $rtfeldman$elm_css$Html$Styled$Attributes$checked = $rtfeldman$elm_css$Html$Styled$Attributes$boolProperty('checked');
 var $rtfeldman$elm_css$Html$Styled$input = $rtfeldman$elm_css$Html$Styled$node('input');
+var $author$project$Tailwind$Utilities$m_1 = A2($rtfeldman$elm_css$Css$property, 'margin', '0.25rem');
 var $rtfeldman$elm_css$Html$Styled$Attributes$name = $rtfeldman$elm_css$Html$Styled$Attributes$stringProperty('name');
 var $elm$json$Json$Decode$bool = _Json_decodeBool;
 var $rtfeldman$elm_css$Html$Styled$Events$targetChecked = A2(
@@ -9734,6 +9741,7 @@ var $rtfeldman$elm_css$Html$Styled$Events$onCheck = function (tagger) {
 		'change',
 		A2($elm$json$Json$Decode$map, tagger, $rtfeldman$elm_css$Html$Styled$Events$targetChecked));
 };
+var $author$project$Tailwind$Utilities$p_1 = A2($rtfeldman$elm_css$Css$property, 'padding', '0.25rem');
 var $author$project$PhotoGroove$sizeToString = function (size) {
 	switch (size.$) {
 		case 'Small':
@@ -9748,7 +9756,12 @@ var $rtfeldman$elm_css$Html$Styled$Attributes$type_ = $rtfeldman$elm_css$Html$St
 var $author$project$PhotoGroove$viewSizeChooser = function (size) {
 	return A2(
 		$rtfeldman$elm_css$Html$Styled$label,
-		_List_Nil,
+		_List_fromArray(
+			[
+				$rtfeldman$elm_css$Html$Styled$Attributes$css(
+				_List_fromArray(
+					[$author$project$Tailwind$Utilities$p_1]))
+			]),
 		_List_fromArray(
 			[
 				A2(
@@ -9764,13 +9777,81 @@ var $author$project$PhotoGroove$viewSizeChooser = function (size) {
 									size,
 									{selected: t}));
 						}),
-						$rtfeldman$elm_css$Html$Styled$Attributes$checked(size.selected)
+						$rtfeldman$elm_css$Html$Styled$Attributes$checked(size.selected),
+						$rtfeldman$elm_css$Html$Styled$Attributes$css(
+						_List_fromArray(
+							[$author$project$Tailwind$Utilities$m_1]))
 					]),
 				_List_Nil),
 				$rtfeldman$elm_css$Html$Styled$text(
 				$author$project$PhotoGroove$sizeToString(size.size))
 			]));
 };
+var $author$project$PhotoGroove$ClickedPhoto = function (a) {
+	return {$: 'ClickedPhoto', a: a};
+};
+var $author$project$Tailwind$Utilities$w_16 = A2($rtfeldman$elm_css$Css$property, 'width', '4rem');
+var $author$project$Tailwind$Utilities$w_28 = A2($rtfeldman$elm_css$Css$property, 'width', '7rem');
+var $author$project$Tailwind$Utilities$w_52 = A2($rtfeldman$elm_css$Css$property, 'width', '13rem');
+var $author$project$PhotoGroove$choosenSizeToPixel = function (size) {
+	switch (size.$) {
+		case 'Small':
+			return $author$project$Tailwind$Utilities$w_16;
+		case 'Medium':
+			return $author$project$Tailwind$Utilities$w_28;
+		default:
+			return $author$project$Tailwind$Utilities$w_52;
+	}
+};
+var $rtfeldman$elm_css$Html$Styled$img = $rtfeldman$elm_css$Html$Styled$node('img');
+var $author$project$Tailwind$Utilities$border_2 = A2($rtfeldman$elm_css$Css$property, 'border-width', '2px');
+var $author$project$Tailwind$Utilities$border_8 = A2($rtfeldman$elm_css$Css$property, 'border-width', '8px');
+var $author$project$Tailwind$Utilities$border_gv_primary = $rtfeldman$elm_css$Css$batch(
+	_List_fromArray(
+		[
+			A2($rtfeldman$elm_css$Css$property, '--tw-border-opacity', '1'),
+			A2($rtfeldman$elm_css$Css$property, 'border-color', 'rgba(96, 181, 204, var(--tw-border-opacity))')
+		]));
+var $author$project$Tailwind$Utilities$border_solid = A2($rtfeldman$elm_css$Css$property, 'border-style', 'solid');
+var $author$project$Tailwind$Utilities$border_white = $rtfeldman$elm_css$Css$batch(
+	_List_fromArray(
+		[
+			A2($rtfeldman$elm_css$Css$property, '--tw-border-opacity', '1'),
+			A2($rtfeldman$elm_css$Css$property, 'border-color', 'rgba(255, 255, 255, var(--tw-border-opacity))')
+		]));
+var $author$project$Tailwind$Utilities$m_0 = A2($rtfeldman$elm_css$Css$property, 'margin', '0px');
+var $author$project$PhotoGroove$selectedImageEffect = F2(
+	function (url, isSelected) {
+		return _Utils_eq(url, isSelected) ? _List_fromArray(
+			[$author$project$Tailwind$Utilities$border_gv_primary, $author$project$Tailwind$Utilities$border_solid, $author$project$Tailwind$Utilities$border_8, $author$project$Tailwind$Utilities$m_0]) : _List_fromArray(
+			[$author$project$Tailwind$Utilities$border_white, $author$project$Tailwind$Utilities$border_solid, $author$project$Tailwind$Utilities$border_2, $author$project$Tailwind$Utilities$m_1]);
+	});
+var $rtfeldman$elm_css$Html$Styled$Attributes$src = function (url) {
+	return A2($rtfeldman$elm_css$Html$Styled$Attributes$stringProperty, 'src', url);
+};
+var $rtfeldman$elm_css$Html$Styled$Attributes$title = $rtfeldman$elm_css$Html$Styled$Attributes$stringProperty('title');
+var $author$project$PhotoGroove$viewThumbnail = F3(
+	function (isSelected, choosenSize, thumb) {
+		return A2(
+			$rtfeldman$elm_css$Html$Styled$img,
+			_List_fromArray(
+				[
+					$rtfeldman$elm_css$Html$Styled$Attributes$src(
+					_Utils_ap($author$project$PhotoGroove$urlPrefix, thumb.url)),
+					$rtfeldman$elm_css$Html$Styled$Attributes$title(
+					thumb.title + ('[' + ($elm$core$String$fromInt(thumb.size) + ' KB]'))),
+					$rtfeldman$elm_css$Html$Styled$Attributes$css(
+					_Utils_ap(
+						A2($author$project$PhotoGroove$selectedImageEffect, thumb.url, isSelected),
+						_List_fromArray(
+							[
+								$author$project$PhotoGroove$choosenSizeToPixel(choosenSize)
+							]))),
+					$rtfeldman$elm_css$Html$Styled$Events$onClick(
+					$author$project$PhotoGroove$ClickedPhoto(thumb.url))
+				]),
+			_List_Nil);
+	});
 var $author$project$Tailwind$Utilities$w_2over4 = A2($rtfeldman$elm_css$Css$property, 'width', '50%');
 var $author$project$Tailwind$Utilities$w_3over4 = A2($rtfeldman$elm_css$Css$property, 'width', '75%');
 var $author$project$Tailwind$Utilities$w_4over5 = A2($rtfeldman$elm_css$Css$property, 'width', '80%');
@@ -9861,7 +9942,12 @@ var $author$project$PhotoGroove$viewLoaded = F3(
 													])),
 												A2(
 												$rtfeldman$elm_css$Html$Styled$div,
-												_List_Nil,
+												_List_fromArray(
+													[
+														$rtfeldman$elm_css$Html$Styled$Attributes$css(
+														_List_fromArray(
+															[$author$project$Tailwind$Utilities$flex]))
+													]),
 												A2($elm$core$List$map, $author$project$PhotoGroove$viewSizeChooser, model.sizes))
 											])),
 										A2(
@@ -9911,6 +9997,37 @@ var $author$project$PhotoGroove$viewLoaded = F3(
 														$rtfeldman$elm_css$Html$Styled$text('Surprise Me!')
 													]))
 											]))
+									])),
+								A2(
+								$rtfeldman$elm_css$Html$Styled$div,
+								_List_fromArray(
+									[
+										$rtfeldman$elm_css$Html$Styled$Attributes$css(
+										_List_fromArray(
+											[$author$project$Tailwind$Utilities$flex, $author$project$Tailwind$Utilities$justify_between, $author$project$Tailwind$Utilities$mt_4]))
+									]),
+								_List_fromArray(
+									[
+										A2(
+										$rtfeldman$elm_css$Html$Styled$div,
+										_List_fromArray(
+											[
+												$rtfeldman$elm_css$Html$Styled$Attributes$css(
+												_List_fromArray(
+													[$author$project$Tailwind$Utilities$flex, $author$project$Tailwind$Utilities$flex_wrap, $author$project$Tailwind$Utilities$self_start]))
+											]),
+										A2(
+											$elm$core$List$map,
+											A2($author$project$PhotoGroove$viewThumbnail, selectedUrl, model.chosenSize),
+											photos)),
+										A2(
+										$rtfeldman$elm_css$Html$Styled$canvas,
+										_List_fromArray(
+											[
+												$rtfeldman$elm_css$Html$Styled$Attributes$id('main-canvas'),
+												$rtfeldman$elm_css$Html$Styled$Attributes$class('large')
+											]),
+										_List_Nil)
 									]))
 							]))
 					]))

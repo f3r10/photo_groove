@@ -12,10 +12,6 @@ port module PhotoGroove exposing
     , view
     )
 
--- import Html exposing (Attribute, Html, button, canvas, div, h1, h3, img, input, label, node, text)
--- import Html.Attributes as Attr exposing (checked, class, classList, id, max, name, src, title, type_)
--- import Html.Events exposing (on, onCheck, onClick)
-
 import Browser
 import Css
 import Css.Global
@@ -65,17 +61,6 @@ type alias Photo =
 photoFromUrl : String -> Photo
 photoFromUrl url =
     { url = url, size = 0, title = "" }
-
-
-
--- this can go for ever
--- photoDecoder : Decoder Photo
--- photoDecoder =
---     map3
---         (\url size title -> {url = url, size = size, title = title})
---         (field "url" string)
---         (field "url" int)
---         (field "title" string)
 
 
 photoDecoder : Decoder Photo
@@ -160,29 +145,30 @@ viewLoaded photos selectedUrl model =
                 [ Html.h1 [ Attr.css [ Tw.text_4xl, Tw.text_gv_primary, Tw.font_bold ] ] [ Html.text "Photo Groove" ]
                 , Html.div [ Attr.css [] ] [ Html.text model.activity ]
                 ]
-            , Html.div [ Attr.css [ Tw.flex, Tw.justify_between] ]
-                [ Html.div [Attr.css [ Tw.flex, Tw.flex_col, Tw.w_full]]
+            , Html.div [ Attr.css [ Tw.flex, Tw.justify_between ] ]
+                [ Html.div [ Attr.css [ Tw.flex, Tw.flex_col, Tw.w_full ] ]
                     [ Html.h3 [] [ Html.text "Thumnail Size:" ]
-                    , Html.div []
+                    , Html.div [ Attr.css [ Tw.flex ] ]
                         (List.map viewSizeChooser model.sizes)
                     ]
-                , Html.div [Attr.css [ Tw.flex, Tw.w_full, Tw.justify_between, Tw.items_center]]
-                    [ Html.div [Attr.css [ Tw.flex, Tw.flex_col, Tw.w_4over5]]
+                , Html.div [ Attr.css [ Tw.flex, Tw.w_full, Tw.justify_between, Tw.items_center ] ]
+                    [ Html.div [ Attr.css [ Tw.flex, Tw.flex_col, Tw.w_4over5 ] ]
                         [ viewFilter SlidHue "Hue" model.hue
                         , viewFilter SlidRipple "Ripple" model.ripple
                         , viewFilter SlidNoise "Noise" model.noise
                         ]
                     , Html.button
                         [ Events.onClick ClickedSurpireseMe
-                        , Attr.css [Tw.p_4, Tw.bg_gv_primary, Tw.w_2over4, Tw.text_black, Tw.text_2xl, Css.hover [Tw.bg_white] ]]
+                        , Attr.css [ Tw.p_4, Tw.bg_gv_primary, Tw.w_2over4, Tw.text_black, Tw.text_2xl, Css.hover [ Tw.bg_white ] ]
+                        ]
                         [ Html.text "Surprise Me!" ]
                     ]
                 ]
-
-            -- , Html.div []
-            --     (List.map (viewThumbnail selectedUrl) photos)
-            -- , Html.canvas [ Attr.id "main-canvas", Attr.class "large" ] []
-            -- , div [] (List.map printTuple model.sizes)
+            , Html.div [ Attr.css [ Tw.flex, Tw.justify_between, Tw.mt_4 ] ]
+                [ Html.div [ Attr.css [ Tw.flex, Tw.flex_wrap, Tw.self_start ] ]
+                    (List.map (viewThumbnail selectedUrl model.chosenSize) photos)
+                , Html.canvas [ Attr.id "main-canvas", Attr.class "large" ] []
+                ]
             ]
         ]
     ]
@@ -198,17 +184,42 @@ sizeToClass s =
     sizeToString s
 
 
-viewThumbnail : String -> Photo -> Html Msg
-viewThumbnail isSelected thumb =
+choosenSizeToPixel : ThumnailSize -> Css.Style
+choosenSizeToPixel size =
+    case size of
+        Small ->
+            Tw.w_16
+
+        Medium ->
+            Tw.w_28
+
+        Large ->
+            Tw.w_52
+
+
+selectedImageEffect : String -> String -> List Css.Style
+selectedImageEffect url isSelected =
+    if url == isSelected then
+        [ Tw.border_gv_primary
+        , Tw.border_solid
+        , Tw.border_8
+        , Tw.m_0
+        ]
+
+    else
+        [ Tw.border_white
+        , Tw.border_solid
+        , Tw.border_2
+        , Tw.m_1
+        ]
+
+
+viewThumbnail : String -> ThumnailSize -> Photo -> Html Msg
+viewThumbnail isSelected choosenSize thumb =
     Html.img
         [ Attr.src (urlPrefix ++ thumb.url)
         , Attr.title (thumb.title ++ "[" ++ String.fromInt thumb.size ++ " KB]")
-        , Attr.classList
-            [ ( "selected"
-              , thumb.url
-                    == isSelected
-              )
-            ]
+        , Attr.css <| selectedImageEffect thumb.url isSelected ++ [ choosenSizeToPixel choosenSize ]
         , Events.onClick (ClickedPhoto thumb.url)
         ]
         []
@@ -216,16 +227,13 @@ viewThumbnail isSelected thumb =
 
 viewSizeChooser : Size -> Html Msg
 viewSizeChooser size =
-    Html.label []
+    Html.label [ Attr.css [ Tw.p_1 ] ]
         [ Html.input
             [ Attr.type_ "radio"
             , Attr.name "size"
-
-            -- , onClick (ClickedSize size)
             , Events.onCheck (\t -> ClickedSize { size | selected = t })
-
-            -- , checked (if size.size == chosenSize then True else False)
             , Attr.checked size.selected
+            , Attr.css [ Tw.m_1 ]
             ]
             []
         , Html.text (sizeToString size.size)
@@ -239,12 +247,12 @@ rangeSlider attributes children =
 
 viewFilter : (Int -> Msg) -> String -> Int -> Html Msg
 viewFilter toMsg name magnitude =
-    Html.div [ Attr.css [ Tw.flex] ]
-        [ Html.label [Attr.css [Tw.w_1over6, Tw.mr_4]] [ Html.text name ]
+    Html.div [ Attr.css [ Tw.flex ] ]
+        [ Html.label [ Attr.css [ Tw.w_1over6, Tw.mr_4 ] ] [ Html.text name ]
         , rangeSlider
             [ Attr.max "11"
             , Attr.property "val" (Encode.int magnitude)
-            , Attr.css [Tw.w_40, Tw.mr_1]
+            , Attr.css [ Tw.w_40, Tw.mr_1 ]
             , onSlide toMsg
             ]
             []
@@ -270,18 +278,6 @@ onSlide toMsg =
     at [ "detail", "userSlidTo" ] int
         |> Json.Decode.map toMsg
         |> Events.on "slide"
-
-
-
--- let
---     detailUserSlidTo : Decoder Int
---     detailUserSlidTo =
---         at [ "detail", "userSlidTo" ] int
---     msgDecoder : Decoder msg
---     msgDecoder =
---         Json.Decode.map toMsg detailUserSlidTo
--- in
--- on "slide" msgDecoder
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -402,14 +398,6 @@ selectUrl url status =
 subscriptions : Model -> Sub Msg
 subscriptions model =
     activityChanges GotActivity
-
-
-
--- case Json.Decode.decodeValue string activity of
---     Ok data ->
---         ( { model | activity = data }, Cmd.none )
---     Err error ->
---         ( { model | status = Errored "Server error" }, Cmd.none )
 
 
 init : Value -> ( Model, Cmd Msg )
