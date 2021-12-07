@@ -4567,52 +4567,6 @@ var _Bitwise_shiftRightZfBy = F2(function(offset, a)
 {
 	return a >>> offset;
 });
-
-
-
-function _Time_now(millisToPosix)
-{
-	return _Scheduler_binding(function(callback)
-	{
-		callback(_Scheduler_succeed(millisToPosix(Date.now())));
-	});
-}
-
-var _Time_setInterval = F2(function(interval, task)
-{
-	return _Scheduler_binding(function(callback)
-	{
-		var id = setInterval(function() { _Scheduler_rawSpawn(task); }, interval);
-		return function() { clearInterval(id); };
-	});
-});
-
-function _Time_here()
-{
-	return _Scheduler_binding(function(callback)
-	{
-		callback(_Scheduler_succeed(
-			A2($elm$time$Time$customZone, -(new Date().getTimezoneOffset()), _List_Nil)
-		));
-	});
-}
-
-
-function _Time_getZoneName()
-{
-	return _Scheduler_binding(function(callback)
-	{
-		try
-		{
-			var name = $elm$time$Time$Name(Intl.DateTimeFormat().resolvedOptions().timeZone);
-		}
-		catch (e)
-		{
-			var name = $elm$time$Time$Offset(new Date().getTimezoneOffset());
-		}
-		callback(_Scheduler_succeed(name));
-	});
-}
 var $elm$core$Basics$composeR = F3(
 	function (f, g, x) {
 		return g(
@@ -5407,14 +5361,8 @@ var $elm$core$Task$perform = F2(
 				A2($elm$core$Task$map, toMessage, task)));
 	});
 var $elm$browser$Browser$element = _Browser_element;
-var $author$project$PhotoGroove$Errored = function (a) {
-	return {$: 'Errored', a: a};
-};
-var $elm$json$Json$Decode$decodeValue = _Json_run;
-var $elm$json$Json$Decode$float = _Json_decodeFloat;
-var $elm$core$String$fromFloat = _String_fromNumber;
-var $author$project$PhotoGroove$GotPhotos = function (a) {
-	return {$: 'GotPhotos', a: a};
+var $author$project$PhotoFolders$GotInitialModel = function (a) {
+	return {$: 'GotInitialModel', a: a};
 };
 var $elm$json$Json$Decode$decodeString = _Json_runOnString;
 var $elm$http$Http$BadStatus_ = F2(
@@ -6198,140 +6146,65 @@ var $elm$http$Http$get = function (r) {
 	return $elm$http$Http$request(
 		{body: $elm$http$Http$emptyBody, expect: r.expect, headers: _List_Nil, method: 'GET', timeout: $elm$core$Maybe$Nothing, tracker: $elm$core$Maybe$Nothing, url: r.url});
 };
-var $elm$json$Json$Decode$list = _Json_decodeList;
-var $author$project$PhotoGroove$Photo = F3(
-	function (url, size, title) {
-		return {size: size, title: title, url: url};
-	});
-var $elm$json$Json$Decode$int = _Json_decodeInt;
-var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom = $elm$json$Json$Decode$map2($elm$core$Basics$apR);
-var $elm$json$Json$Decode$field = _Json_decodeField;
-var $elm$json$Json$Decode$andThen = _Json_andThen;
-var $elm$json$Json$Decode$fail = _Json_fail;
-var $elm$json$Json$Decode$null = _Json_decodeNull;
-var $elm$json$Json$Decode$oneOf = _Json_oneOf;
-var $elm$json$Json$Decode$value = _Json_decodeValue;
-var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optionalDecoder = F3(
-	function (pathDecoder, valDecoder, fallback) {
-		var nullOr = function (decoder) {
-			return $elm$json$Json$Decode$oneOf(
-				_List_fromArray(
-					[
-						decoder,
-						$elm$json$Json$Decode$null(fallback)
-					]));
-		};
-		var handleResult = function (input) {
-			var _v0 = A2($elm$json$Json$Decode$decodeValue, pathDecoder, input);
-			if (_v0.$ === 'Ok') {
-				var rawValue = _v0.a;
-				var _v1 = A2(
-					$elm$json$Json$Decode$decodeValue,
-					nullOr(valDecoder),
-					rawValue);
-				if (_v1.$ === 'Ok') {
-					var finalResult = _v1.a;
-					return $elm$json$Json$Decode$succeed(finalResult);
-				} else {
-					var finalErr = _v1.a;
-					return $elm$json$Json$Decode$fail(
-						$elm$json$Json$Decode$errorToString(finalErr));
-				}
-			} else {
-				return $elm$json$Json$Decode$succeed(fallback);
-			}
-		};
-		return A2($elm$json$Json$Decode$andThen, handleResult, $elm$json$Json$Decode$value);
-	});
-var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optional = F4(
-	function (key, valDecoder, fallback, decoder) {
-		return A2(
-			$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom,
-			A3(
-				$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optionalDecoder,
-				A2($elm$json$Json$Decode$field, key, $elm$json$Json$Decode$value),
-				valDecoder,
-				fallback),
-			decoder);
-	});
-var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required = F3(
-	function (key, valDecoder, decoder) {
-		return A2(
-			$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom,
-			A2($elm$json$Json$Decode$field, key, valDecoder),
-			decoder);
-	});
-var $elm$json$Json$Decode$string = _Json_decodeString;
-var $author$project$PhotoGroove$photoDecoder = A4(
-	$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optional,
-	'title',
-	$elm$json$Json$Decode$string,
-	'(untitled)',
-	A3(
-		$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-		'size',
-		$elm$json$Json$Decode$int,
-		A3(
-			$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-			'url',
-			$elm$json$Json$Decode$string,
-			$elm$json$Json$Decode$succeed($author$project$PhotoGroove$Photo))));
-var $author$project$PhotoGroove$initialCmd = $elm$http$Http$get(
+var $author$project$PhotoFolders$initialModel = {photos: $elm$core$Dict$empty, selectedPhotoUrl: $elm$core$Maybe$Nothing};
+var $elm$core$Dict$fromList = function (assocs) {
+	return A3(
+		$elm$core$List$foldl,
+		F2(
+			function (_v0, dict) {
+				var key = _v0.a;
+				var value = _v0.b;
+				return A3($elm$core$Dict$insert, key, value, dict);
+			}),
+		$elm$core$Dict$empty,
+		assocs);
+};
+var $author$project$PhotoFolders$modelDecoder = $elm$json$Json$Decode$succeed(
 	{
-		expect: A2(
-			$elm$http$Http$expectJson,
-			$author$project$PhotoGroove$GotPhotos,
-			$elm$json$Json$Decode$list($author$project$PhotoGroove$photoDecoder)),
-		url: 'http://elm-in-action.com/photos/list.json'
+		photos: $elm$core$Dict$fromList(
+			_List_fromArray(
+				[
+					_Utils_Tuple2(
+					'trevi',
+					{
+						relatedUrls: _List_fromArray(
+							['coli', 'fresco']),
+						size: 34,
+						title: 'Trevi',
+						url: 'trevi'
+					}),
+					_Utils_Tuple2(
+					'fresco',
+					{
+						relatedUrls: _List_fromArray(
+							['trevi']),
+						size: 46,
+						title: 'Fresco',
+						url: 'fresco'
+					}),
+					_Utils_Tuple2(
+					'coli',
+					{
+						relatedUrls: _List_fromArray(
+							['trevi', 'fresco']),
+						size: 36,
+						title: 'Coliseum',
+						url: 'coli'
+					})
+				])),
+		selectedPhotoUrl: $elm$core$Maybe$Just('trevi')
 	});
-var $author$project$PhotoGroove$Large = {$: 'Large'};
-var $author$project$PhotoGroove$Loading = {$: 'Loading'};
-var $author$project$PhotoGroove$Medium = {$: 'Medium'};
-var $author$project$PhotoGroove$Small = {$: 'Small'};
-var $author$project$PhotoGroove$initialModel = {
-	activity: '',
-	chosenSize: $author$project$PhotoGroove$Medium,
-	hue: 5,
-	noise: 5,
-	ripple: 5,
-	sizes: _List_fromArray(
-		[
-			{selected: false, size: $author$project$PhotoGroove$Small},
-			{selected: true, size: $author$project$PhotoGroove$Medium},
-			{selected: false, size: $author$project$PhotoGroove$Large}
-		]),
-	status: $author$project$PhotoGroove$Loading
+var $author$project$PhotoFolders$init = function (_v0) {
+	return _Utils_Tuple2(
+		$author$project$PhotoFolders$initialModel,
+		$elm$http$Http$get(
+			{
+				expect: A2($elm$http$Http$expectJson, $author$project$PhotoFolders$GotInitialModel, $author$project$PhotoFolders$modelDecoder),
+				url: 'http://elm-in-action.com/folders/list'
+			}));
 };
-var $elm$core$Platform$Cmd$batch = _Platform_batch;
-var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
-var $author$project$PhotoGroove$init = function (flags) {
-	var _v0 = A2($elm$json$Json$Decode$decodeValue, $elm$json$Json$Decode$float, flags);
-	if (_v0.$ === 'Ok') {
-		var data = _v0.a;
-		var activity = 'Initializing Pasta v' + $elm$core$String$fromFloat(data);
-		return _Utils_Tuple2(
-			_Utils_update(
-				$author$project$PhotoGroove$initialModel,
-				{activity: activity}),
-			$author$project$PhotoGroove$initialCmd);
-	} else {
-		var error = _v0.a;
-		return _Utils_Tuple2(
-			_Utils_update(
-				$author$project$PhotoGroove$initialModel,
-				{
-					status: $author$project$PhotoGroove$Errored('Server error')
-				}),
-			$elm$core$Platform$Cmd$none);
-	}
-};
-var $author$project$PhotoGroove$GotActivity = function (a) {
-	return {$: 'GotActivity', a: a};
-};
-var $author$project$PhotoGroove$activityChanges = _Platform_incomingPort('activityChanges', $elm$json$Json$Decode$value);
-var $author$project$PhotoGroove$subscriptions = function (model) {
-	return $author$project$PhotoGroove$activityChanges($author$project$PhotoGroove$GotActivity);
-};
+var $elm$core$Platform$Sub$batch = _Platform_batch;
+var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
 var $elm$core$List$isEmpty = function (xs) {
 	if (!xs.b) {
 		return true;
@@ -8552,424 +8425,37 @@ var $rtfeldman$elm_css$VirtualDom$Styled$toUnstyled = function (vdom) {
 	}
 };
 var $rtfeldman$elm_css$Html$Styled$toUnstyled = $rtfeldman$elm_css$VirtualDom$Styled$toUnstyled;
-var $author$project$PhotoGroove$GotRandomPhoto = function (a) {
-	return {$: 'GotRandomPhoto', a: a};
-};
-var $author$project$PhotoGroove$Loaded = F2(
-	function (a, b) {
-		return {$: 'Loaded', a: a, b: b};
-	});
-var $elm$json$Json$Encode$float = _Json_wrap;
-var $elm$json$Json$Encode$list = F2(
-	function (func, entries) {
-		return _Json_wrap(
-			A3(
-				$elm$core$List$foldl,
-				_Json_addEntry(func),
-				_Json_emptyArray(_Utils_Tuple0),
-				entries));
-	});
-var $elm$json$Json$Encode$object = function (pairs) {
-	return _Json_wrap(
-		A3(
-			$elm$core$List$foldl,
-			F2(
-				function (_v0, obj) {
-					var k = _v0.a;
-					var v = _v0.b;
-					return A3(_Json_addField, k, v, obj);
-				}),
-			_Json_emptyObject(_Utils_Tuple0),
-			pairs));
-};
-var $elm$json$Json$Encode$string = _Json_wrap;
-var $author$project$PhotoGroove$setFilters = _Platform_outgoingPort(
-	'setFilters',
-	function ($) {
-		return $elm$json$Json$Encode$object(
-			_List_fromArray(
-				[
-					_Utils_Tuple2(
-					'filters',
-					$elm$json$Json$Encode$list(
-						function ($) {
-							return $elm$json$Json$Encode$object(
-								_List_fromArray(
-									[
-										_Utils_Tuple2(
-										'amount',
-										$elm$json$Json$Encode$float($.amount)),
-										_Utils_Tuple2(
-										'name',
-										$elm$json$Json$Encode$string($.name))
-									]));
-						})($.filters)),
-					_Utils_Tuple2(
-					'url',
-					$elm$json$Json$Encode$string($.url))
-				]));
-	});
-var $author$project$PhotoGroove$urlPrefix = 'http://elm-in-action.com/';
-var $author$project$PhotoGroove$applyFilters = function (model) {
-	var _v0 = model.status;
-	switch (_v0.$) {
-		case 'Loaded':
-			var photos = _v0.a;
-			var selectedUrl = _v0.b;
-			var url = $author$project$PhotoGroove$urlPrefix + ('large/' + selectedUrl);
-			var filters = _List_fromArray(
-				[
-					{amount: model.hue / 11, name: 'Hue'},
-					{amount: model.ripple / 11, name: 'Ripple'},
-					{amount: model.noise / 11, name: 'Noise'}
-				]);
+var $elm$core$Platform$Cmd$batch = _Platform_batch;
+var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
+var $author$project$PhotoFolders$update = F2(
+	function (msg, model) {
+		if (msg.$ === 'ClickedPhoto') {
+			var url = msg.a;
 			return _Utils_Tuple2(
-				model,
-				$author$project$PhotoGroove$setFilters(
-					{filters: filters, url: url}));
-		case 'Loading':
-			return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
-		default:
-			var errorMessage = _v0.a;
-			return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
-	}
-};
-var $elm$random$Random$Generate = function (a) {
-	return {$: 'Generate', a: a};
-};
-var $elm$random$Random$Seed = F2(
-	function (a, b) {
-		return {$: 'Seed', a: a, b: b};
-	});
-var $elm$random$Random$next = function (_v0) {
-	var state0 = _v0.a;
-	var incr = _v0.b;
-	return A2($elm$random$Random$Seed, ((state0 * 1664525) + incr) >>> 0, incr);
-};
-var $elm$random$Random$initialSeed = function (x) {
-	var _v0 = $elm$random$Random$next(
-		A2($elm$random$Random$Seed, 0, 1013904223));
-	var state1 = _v0.a;
-	var incr = _v0.b;
-	var state2 = (state1 + x) >>> 0;
-	return $elm$random$Random$next(
-		A2($elm$random$Random$Seed, state2, incr));
-};
-var $elm$time$Time$Name = function (a) {
-	return {$: 'Name', a: a};
-};
-var $elm$time$Time$Offset = function (a) {
-	return {$: 'Offset', a: a};
-};
-var $elm$time$Time$Zone = F2(
-	function (a, b) {
-		return {$: 'Zone', a: a, b: b};
-	});
-var $elm$time$Time$customZone = $elm$time$Time$Zone;
-var $elm$time$Time$Posix = function (a) {
-	return {$: 'Posix', a: a};
-};
-var $elm$time$Time$millisToPosix = $elm$time$Time$Posix;
-var $elm$time$Time$now = _Time_now($elm$time$Time$millisToPosix);
-var $elm$time$Time$posixToMillis = function (_v0) {
-	var millis = _v0.a;
-	return millis;
-};
-var $elm$random$Random$init = A2(
-	$elm$core$Task$andThen,
-	function (time) {
-		return $elm$core$Task$succeed(
-			$elm$random$Random$initialSeed(
-				$elm$time$Time$posixToMillis(time)));
-	},
-	$elm$time$Time$now);
-var $elm$random$Random$step = F2(
-	function (_v0, seed) {
-		var generator = _v0.a;
-		return generator(seed);
-	});
-var $elm$random$Random$onEffects = F3(
-	function (router, commands, seed) {
-		if (!commands.b) {
-			return $elm$core$Task$succeed(seed);
+				_Utils_update(
+					model,
+					{
+						selectedPhotoUrl: $elm$core$Maybe$Just(url)
+					}),
+				$elm$core$Platform$Cmd$none);
 		} else {
-			var generator = commands.a.a;
-			var rest = commands.b;
-			var _v1 = A2($elm$random$Random$step, generator, seed);
-			var value = _v1.a;
-			var newSeed = _v1.b;
-			return A2(
-				$elm$core$Task$andThen,
-				function (_v2) {
-					return A3($elm$random$Random$onEffects, router, rest, newSeed);
-				},
-				A2($elm$core$Platform$sendToApp, router, value));
-		}
-	});
-var $elm$random$Random$onSelfMsg = F3(
-	function (_v0, _v1, seed) {
-		return $elm$core$Task$succeed(seed);
-	});
-var $elm$random$Random$Generator = function (a) {
-	return {$: 'Generator', a: a};
-};
-var $elm$random$Random$map = F2(
-	function (func, _v0) {
-		var genA = _v0.a;
-		return $elm$random$Random$Generator(
-			function (seed0) {
-				var _v1 = genA(seed0);
-				var a = _v1.a;
-				var seed1 = _v1.b;
-				return _Utils_Tuple2(
-					func(a),
-					seed1);
-			});
-	});
-var $elm$random$Random$cmdMap = F2(
-	function (func, _v0) {
-		var generator = _v0.a;
-		return $elm$random$Random$Generate(
-			A2($elm$random$Random$map, func, generator));
-	});
-_Platform_effectManagers['Random'] = _Platform_createManager($elm$random$Random$init, $elm$random$Random$onEffects, $elm$random$Random$onSelfMsg, $elm$random$Random$cmdMap);
-var $elm$random$Random$command = _Platform_leaf('Random');
-var $elm$random$Random$generate = F2(
-	function (tagger, generator) {
-		return $elm$random$Random$command(
-			$elm$random$Random$Generate(
-				A2($elm$random$Random$map, tagger, generator)));
-	});
-var $elm$core$Tuple$pair = F2(
-	function (a, b) {
-		return _Utils_Tuple2(a, b);
-	});
-var $author$project$PhotoGroove$selectUrl = F2(
-	function (url, status) {
-		switch (status.$) {
-			case 'Loaded':
-				var photos = status.a;
-				return A2($author$project$PhotoGroove$Loaded, photos, url);
-			case 'Loading':
-				return status;
-			default:
-				return status;
-		}
-	});
-var $elm$random$Random$addOne = function (value) {
-	return _Utils_Tuple2(1, value);
-};
-var $elm$core$Basics$abs = function (n) {
-	return (n < 0) ? (-n) : n;
-};
-var $elm$random$Random$peel = function (_v0) {
-	var state = _v0.a;
-	var word = (state ^ (state >>> ((state >>> 28) + 4))) * 277803737;
-	return ((word >>> 22) ^ word) >>> 0;
-};
-var $elm$random$Random$float = F2(
-	function (a, b) {
-		return $elm$random$Random$Generator(
-			function (seed0) {
-				var seed1 = $elm$random$Random$next(seed0);
-				var range = $elm$core$Basics$abs(b - a);
-				var n1 = $elm$random$Random$peel(seed1);
-				var n0 = $elm$random$Random$peel(seed0);
-				var lo = (134217727 & n1) * 1.0;
-				var hi = (67108863 & n0) * 1.0;
-				var val = ((hi * 134217728.0) + lo) / 9007199254740992.0;
-				var scaled = (val * range) + a;
-				return _Utils_Tuple2(
-					scaled,
-					$elm$random$Random$next(seed1));
-			});
-	});
-var $elm$random$Random$getByWeight = F3(
-	function (_v0, others, countdown) {
-		getByWeight:
-		while (true) {
-			var weight = _v0.a;
-			var value = _v0.b;
-			if (!others.b) {
-				return value;
+			if (msg.a.$ === 'Ok') {
+				var newModel = msg.a.a;
+				return _Utils_Tuple2(newModel, $elm$core$Platform$Cmd$none);
 			} else {
-				var second = others.a;
-				var otherOthers = others.b;
-				if (_Utils_cmp(
-					countdown,
-					$elm$core$Basics$abs(weight)) < 1) {
-					return value;
-				} else {
-					var $temp$_v0 = second,
-						$temp$others = otherOthers,
-						$temp$countdown = countdown - $elm$core$Basics$abs(weight);
-					_v0 = $temp$_v0;
-					others = $temp$others;
-					countdown = $temp$countdown;
-					continue getByWeight;
-				}
+				return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 			}
 		}
 	});
-var $elm$core$List$sum = function (numbers) {
-	return A3($elm$core$List$foldl, $elm$core$Basics$add, 0, numbers);
-};
-var $elm$random$Random$weighted = F2(
-	function (first, others) {
-		var normalize = function (_v0) {
-			var weight = _v0.a;
-			return $elm$core$Basics$abs(weight);
-		};
-		var total = normalize(first) + $elm$core$List$sum(
-			A2($elm$core$List$map, normalize, others));
-		return A2(
-			$elm$random$Random$map,
-			A2($elm$random$Random$getByWeight, first, others),
-			A2($elm$random$Random$float, 0, total));
-	});
-var $elm$random$Random$uniform = F2(
-	function (value, valueList) {
-		return A2(
-			$elm$random$Random$weighted,
-			$elm$random$Random$addOne(value),
-			A2($elm$core$List$map, $elm$random$Random$addOne, valueList));
-	});
-var $author$project$PhotoGroove$update = F2(
-	function (msg, model) {
-		switch (msg.$) {
-			case 'ClickedPhoto':
-				var url = msg.a;
-				return $author$project$PhotoGroove$applyFilters(
-					_Utils_update(
-						model,
-						{
-							status: A2($author$project$PhotoGroove$selectUrl, url, model.status)
-						}));
-			case 'ClickedSurpireseMe':
-				var _v1 = model.status;
-				switch (_v1.$) {
-					case 'Loaded':
-						if (_v1.a.b) {
-							var _v2 = _v1.a;
-							var firstPhoto = _v2.a;
-							var otherPhotos = _v2.b;
-							return A2(
-								$elm$core$Tuple$pair,
-								model,
-								A2(
-									$elm$random$Random$generate,
-									$author$project$PhotoGroove$GotRandomPhoto,
-									A2($elm$random$Random$uniform, firstPhoto, otherPhotos)));
-						} else {
-							return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
-						}
-					case 'Loading':
-						return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
-					default:
-						return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
-				}
-			case 'ClickedSize':
-				var size = msg.a;
-				var updateSizes = A2(
-					$elm$core$List$map,
-					function (s) {
-						return _Utils_eq(s.size, size.size) ? size : {selected: false, size: s.size};
-					},
-					model.sizes);
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{chosenSize: size.size, sizes: updateSizes}),
-					$elm$core$Platform$Cmd$none);
-			case 'GotRandomPhoto':
-				var photo = msg.a;
-				return $author$project$PhotoGroove$applyFilters(
-					_Utils_update(
-						model,
-						{
-							status: A2($author$project$PhotoGroove$selectUrl, photo.url, model.status)
-						}));
-			case 'GotActivity':
-				var activity = msg.a;
-				var _v3 = A2($elm$json$Json$Decode$decodeValue, $elm$json$Json$Decode$string, activity);
-				if (_v3.$ === 'Ok') {
-					var data = _v3.a;
-					return _Utils_Tuple2(
-						_Utils_update(
-							model,
-							{activity: data}),
-						$elm$core$Platform$Cmd$none);
-				} else {
-					var error = _v3.a;
-					return _Utils_Tuple2(
-						_Utils_update(
-							model,
-							{
-								status: $author$project$PhotoGroove$Errored('Server error')
-							}),
-						$elm$core$Platform$Cmd$none);
-				}
-			case 'GotPhotos':
-				if (msg.a.$ === 'Ok') {
-					var responseList = msg.a.a;
-					if (responseList.b) {
-						var photos = responseList;
-						var firstPhoto = photos.a;
-						return $author$project$PhotoGroove$applyFilters(
-							_Utils_update(
-								model,
-								{
-									status: A2($author$project$PhotoGroove$Loaded, photos, firstPhoto.url)
-								}));
-					} else {
-						return _Utils_Tuple2(
-							_Utils_update(
-								model,
-								{
-									status: $author$project$PhotoGroove$Errored('0 photos found')
-								}),
-							$elm$core$Platform$Cmd$none);
-					}
-				} else {
-					var httpError = msg.a.a;
-					return _Utils_Tuple2(
-						_Utils_update(
-							model,
-							{
-								status: $author$project$PhotoGroove$Errored('Server error')
-							}),
-						$elm$core$Platform$Cmd$none);
-				}
-			case 'SlidHue':
-				var hue = msg.a;
-				return $author$project$PhotoGroove$applyFilters(
-					_Utils_update(
-						model,
-						{hue: hue}));
-			case 'SlidRipple':
-				var ripple = msg.a;
-				return $author$project$PhotoGroove$applyFilters(
-					_Utils_update(
-						model,
-						{ripple: ripple}));
-			default:
-				var noise = msg.a;
-				return $author$project$PhotoGroove$applyFilters(
-					_Utils_update(
-						model,
-						{noise: noise}));
+var $elm$core$Maybe$andThen = F2(
+	function (callback, maybeValue) {
+		if (maybeValue.$ === 'Just') {
+			var value = maybeValue.a;
+			return callback(value);
+		} else {
+			return $elm$core$Maybe$Nothing;
 		}
 	});
-var $rtfeldman$elm_css$Css$Preprocess$AppendProperty = function (a) {
-	return {$: 'AppendProperty', a: a};
-};
-var $rtfeldman$elm_css$Css$property = F2(
-	function (key, value) {
-		return $rtfeldman$elm_css$Css$Preprocess$AppendProperty(key + (':' + value));
-	});
-var $rtfeldman$elm_css$Css$backgroundColor = function (c) {
-	return A2($rtfeldman$elm_css$Css$property, 'background-color', c.value);
-};
 var $rtfeldman$elm_css$VirtualDom$Styled$Attribute = F3(
 	function (a, b, c) {
 		return {$: 'Attribute', a: a, b: b, c: c};
@@ -8999,6 +8485,7 @@ var $elm$virtual_dom$VirtualDom$property = F2(
 			_VirtualDom_noInnerHtmlOrFormAction(key),
 			_VirtualDom_noJavaScriptOrHtmlUri(value));
 	});
+var $elm$json$Json$Encode$string = _Json_wrap;
 var $rtfeldman$elm_css$Html$Styled$Internal$css = function (styles) {
 	var classname = $rtfeldman$elm_css$VirtualDom$Styled$getClassname(styles);
 	var classProperty = A2(
@@ -9015,531 +8502,27 @@ var $rtfeldman$elm_css$VirtualDom$Styled$Node = F3(
 var $rtfeldman$elm_css$VirtualDom$Styled$node = $rtfeldman$elm_css$VirtualDom$Styled$Node;
 var $rtfeldman$elm_css$Html$Styled$node = $rtfeldman$elm_css$VirtualDom$Styled$node;
 var $rtfeldman$elm_css$Html$Styled$div = $rtfeldman$elm_css$Html$Styled$node('div');
+var $rtfeldman$elm_css$Css$Preprocess$AppendProperty = function (a) {
+	return {$: 'AppendProperty', a: a};
+};
+var $rtfeldman$elm_css$Css$property = F2(
+	function (key, value) {
+		return $rtfeldman$elm_css$Css$Preprocess$AppendProperty(key + (':' + value));
+	});
+var $author$project$Tailwind$Utilities$flex = A2($rtfeldman$elm_css$Css$property, 'display', 'flex');
+var $author$project$Tailwind$Utilities$items_center = A2($rtfeldman$elm_css$Css$property, 'align-items', 'center');
 var $rtfeldman$elm_css$VirtualDom$Styled$Unstyled = function (a) {
 	return {$: 'Unstyled', a: a};
 };
-var $rtfeldman$elm_css$VirtualDom$Styled$unstyledNode = $rtfeldman$elm_css$VirtualDom$Styled$Unstyled;
-var $rtfeldman$elm_css$Css$Global$global = function (snippets) {
-	return $rtfeldman$elm_css$VirtualDom$Styled$unstyledNode(
-		A3(
-			$elm$virtual_dom$VirtualDom$node,
-			'span',
-			_List_Nil,
-			$elm$core$List$singleton(
-				A3(
-					$elm$virtual_dom$VirtualDom$node,
-					'style',
-					_List_Nil,
-					$elm$core$List$singleton(
-						$elm$virtual_dom$VirtualDom$text(
-							$rtfeldman$elm_css$Css$Preprocess$Resolve$compile(
-								$elm$core$List$singleton(
-									$rtfeldman$elm_css$Css$Preprocess$stylesheet(snippets)))))))));
-};
-var $rtfeldman$elm_css$Css$Global$selector = F2(
-	function (selectorStr, styles) {
-		return A2(
-			$rtfeldman$elm_css$VirtualDom$Styled$makeSnippet,
-			styles,
-			A2($rtfeldman$elm_css$Css$Structure$CustomSelector, selectorStr, _List_Nil));
-	});
-var $author$project$Tailwind$Utilities$globalStyles = _List_fromArray(
-	[
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'*,\n::before,\n::after',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, 'box-sizing', 'border-box')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'html',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, '-moz-tab-size', '4'),
-				A2($rtfeldman$elm_css$Css$property, '-o-tab-size', '4'),
-				A2($rtfeldman$elm_css$Css$property, 'tab-size', '4')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'html',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, 'line-height', '1.15'),
-				A2($rtfeldman$elm_css$Css$property, '-webkit-text-size-adjust', '100%')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'body',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, 'margin', '0')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'body',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, 'font-family', 'system-ui,\n\t\t-apple-system, \n\t\t\'Segoe UI\',\n\t\tRoboto,\n\t\tHelvetica,\n\t\tArial,\n\t\tsans-serif,\n\t\t\'Apple Color Emoji\',\n\t\t\'Segoe UI Emoji\'')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'hr',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, 'height', '0'),
-				A2($rtfeldman$elm_css$Css$property, 'color', 'inherit')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'abbr[title]',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, '-webkit-text-decoration', 'underline dotted'),
-				A2($rtfeldman$elm_css$Css$property, 'text-decoration', 'underline dotted')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'b,\nstrong',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, 'font-weight', 'bolder')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'code,\nkbd,\nsamp,\npre',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, 'font-family', 'ui-monospace,\n\t\tSFMono-Regular,\n\t\tConsolas,\n\t\t\'Liberation Mono\',\n\t\tMenlo,\n\t\tmonospace'),
-				A2($rtfeldman$elm_css$Css$property, 'font-size', '1em')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'small',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, 'font-size', '80%')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'sub,\nsup',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, 'font-size', '75%'),
-				A2($rtfeldman$elm_css$Css$property, 'line-height', '0'),
-				A2($rtfeldman$elm_css$Css$property, 'position', 'relative'),
-				A2($rtfeldman$elm_css$Css$property, 'vertical-align', 'baseline')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'sub',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, 'bottom', '-0.25em')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'sup',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, 'top', '-0.5em')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'table',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, 'text-indent', '0'),
-				A2($rtfeldman$elm_css$Css$property, 'border-color', 'inherit')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'button,\ninput,\noptgroup,\nselect,\ntextarea',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, 'font-family', 'inherit'),
-				A2($rtfeldman$elm_css$Css$property, 'font-size', '100%'),
-				A2($rtfeldman$elm_css$Css$property, 'line-height', '1.15'),
-				A2($rtfeldman$elm_css$Css$property, 'margin', '0')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'button,\nselect',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, 'text-transform', 'none')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'button,\n[type=\'button\'],\n[type=\'reset\'],\n[type=\'submit\']',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, '-webkit-appearance', 'button')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'::-moz-focus-inner',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, 'border-style', 'none'),
-				A2($rtfeldman$elm_css$Css$property, 'padding', '0')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		':-moz-focusring',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, 'outline', '1px dotted ButtonText')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		':-moz-ui-invalid',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, 'box-shadow', 'none')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'legend',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, 'padding', '0')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'progress',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, 'vertical-align', 'baseline')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'::-webkit-inner-spin-button,\n::-webkit-outer-spin-button',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, 'height', 'auto')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'[type=\'search\']',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, '-webkit-appearance', 'textfield'),
-				A2($rtfeldman$elm_css$Css$property, 'outline-offset', '-2px')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'::-webkit-search-decoration',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, '-webkit-appearance', 'none')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'::-webkit-file-upload-button',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, '-webkit-appearance', 'button'),
-				A2($rtfeldman$elm_css$Css$property, 'font', 'inherit')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'summary',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, 'display', 'list-item')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'blockquote,\ndl,\ndd,\nh1,\nh2,\nh3,\nh4,\nh5,\nh6,\nhr,\nfigure,\np,\npre',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, 'margin', '0')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'button',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, 'background-color', 'transparent'),
-				A2($rtfeldman$elm_css$Css$property, 'background-image', 'none')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'fieldset',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, 'margin', '0'),
-				A2($rtfeldman$elm_css$Css$property, 'padding', '0')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'ol,\nul',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, 'list-style', 'none'),
-				A2($rtfeldman$elm_css$Css$property, 'margin', '0'),
-				A2($rtfeldman$elm_css$Css$property, 'padding', '0')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'html',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, 'font-family', 'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"'),
-				A2($rtfeldman$elm_css$Css$property, 'line-height', '1.5')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'body',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, 'font-family', 'inherit'),
-				A2($rtfeldman$elm_css$Css$property, 'line-height', 'inherit')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'*,\n::before,\n::after',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, 'box-sizing', 'border-box'),
-				A2($rtfeldman$elm_css$Css$property, 'border-width', '0'),
-				A2($rtfeldman$elm_css$Css$property, 'border-style', 'solid'),
-				A2($rtfeldman$elm_css$Css$property, 'border-color', 'currentColor')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'hr',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, 'border-top-width', '1px')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'img',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, 'border-style', 'solid')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'textarea',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, 'resize', 'vertical')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'input::-moz-placeholder, textarea::-moz-placeholder',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, 'opacity', '1'),
-				A2($rtfeldman$elm_css$Css$property, 'color', '#9ca3af')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'input:-ms-input-placeholder, textarea:-ms-input-placeholder',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, 'opacity', '1'),
-				A2($rtfeldman$elm_css$Css$property, 'color', '#9ca3af')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'input::placeholder,\ntextarea::placeholder',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, 'opacity', '1'),
-				A2($rtfeldman$elm_css$Css$property, 'color', '#9ca3af')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'button,\n[role=\"button\"]',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, 'cursor', 'pointer')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		':-moz-focusring',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, 'outline', 'auto')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'table',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, 'border-collapse', 'collapse')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'h1,\nh2,\nh3,\nh4,\nh5,\nh6',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, 'font-size', 'inherit'),
-				A2($rtfeldman$elm_css$Css$property, 'font-weight', 'inherit')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'a',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, 'color', 'inherit'),
-				A2($rtfeldman$elm_css$Css$property, 'text-decoration', 'inherit')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'button,\ninput,\noptgroup,\nselect,\ntextarea',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, 'padding', '0'),
-				A2($rtfeldman$elm_css$Css$property, 'line-height', 'inherit'),
-				A2($rtfeldman$elm_css$Css$property, 'color', 'inherit')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'pre,\ncode,\nkbd,\nsamp',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, 'font-family', 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", monospace')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'img,\nsvg,\nvideo,\ncanvas,\naudio,\niframe,\nembed,\nobject',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, 'display', 'block'),
-				A2($rtfeldman$elm_css$Css$property, 'vertical-align', 'middle')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'img,\nvideo',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, 'max-width', '100%'),
-				A2($rtfeldman$elm_css$Css$property, 'height', 'auto')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'[hidden]',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, 'display', 'none')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'*, ::before, ::after',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, '--tw-border-opacity', '1'),
-				A2($rtfeldman$elm_css$Css$property, 'border-color', 'rgba(229, 231, 235, var(--tw-border-opacity))')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'*, ::before, ::after',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, '--tw-shadow', '0 0 #0000')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'*, ::before, ::after',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, '--tw-ring-inset', 'var(--tw-empty,/*!*/ /*!*/)'),
-				A2($rtfeldman$elm_css$Css$property, '--tw-ring-offset-width', '0px'),
-				A2($rtfeldman$elm_css$Css$property, '--tw-ring-offset-color', '#fff'),
-				A2($rtfeldman$elm_css$Css$property, '--tw-ring-color', 'rgba(59, 130, 246, 0.5)'),
-				A2($rtfeldman$elm_css$Css$property, '--tw-ring-offset-shadow', '0 0 #0000'),
-				A2($rtfeldman$elm_css$Css$property, '--tw-ring-shadow', '0 0 #0000')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'body',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, 'background-color', 'rgb(44, 44, 44)')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'range-slider .jsr',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, 'margin', '0')
-			])),
-		A2(
-		$rtfeldman$elm_css$Css$Global$selector,
-		'range-slider .jsr_label',
-		_List_fromArray(
-			[
-				A2($rtfeldman$elm_css$Css$property, 'display', 'none')
-			]))
-	]);
-var $rtfeldman$elm_css$Css$Structure$Compatible = {$: 'Compatible'};
-var $rtfeldman$elm_css$Css$cssFunction = F2(
-	function (funcName, args) {
-		return funcName + ('(' + (A2($elm$core$String$join, ', ', args) + ')'));
-	});
-var $rtfeldman$elm_css$Css$rgb = F3(
-	function (r, g, b) {
-		return {
-			alpha: 1,
-			blue: b,
-			color: $rtfeldman$elm_css$Css$Structure$Compatible,
-			green: g,
-			red: r,
-			value: A2(
-				$rtfeldman$elm_css$Css$cssFunction,
-				'rgb',
-				A2(
-					$elm$core$List$map,
-					$elm$core$String$fromInt,
-					_List_fromArray(
-						[r, g, b])))
-		};
-	});
 var $rtfeldman$elm_css$VirtualDom$Styled$text = function (str) {
 	return $rtfeldman$elm_css$VirtualDom$Styled$Unstyled(
 		$elm$virtual_dom$VirtualDom$text(str));
 };
 var $rtfeldman$elm_css$Html$Styled$text = $rtfeldman$elm_css$VirtualDom$Styled$text;
-var $rtfeldman$elm_css$Css$Preprocess$ApplyStyles = function (a) {
-	return {$: 'ApplyStyles', a: a};
-};
-var $rtfeldman$elm_css$Css$batch = $rtfeldman$elm_css$Css$Preprocess$ApplyStyles;
-var $author$project$Tailwind$Utilities$text_white = $rtfeldman$elm_css$Css$batch(
-	_List_fromArray(
-		[
-			A2($rtfeldman$elm_css$Css$property, '--tw-text-opacity', '1'),
-			A2($rtfeldman$elm_css$Css$property, 'color', 'rgba(255, 255, 255, var(--tw-text-opacity))')
-		]));
-var $author$project$PhotoGroove$ClickedSurpireseMe = {$: 'ClickedSurpireseMe'};
-var $author$project$PhotoGroove$SlidHue = function (a) {
-	return {$: 'SlidHue', a: a};
-};
-var $author$project$PhotoGroove$SlidNoise = function (a) {
-	return {$: 'SlidNoise', a: a};
-};
-var $author$project$PhotoGroove$SlidRipple = function (a) {
-	return {$: 'SlidRipple', a: a};
-};
-var $author$project$Tailwind$Utilities$bg_gv_primary = $rtfeldman$elm_css$Css$batch(
-	_List_fromArray(
-		[
-			A2($rtfeldman$elm_css$Css$property, '--tw-bg-opacity', '1'),
-			A2($rtfeldman$elm_css$Css$property, 'background-color', 'rgba(96, 181, 204, var(--tw-bg-opacity))')
-		]));
-var $author$project$Tailwind$Utilities$bg_white = $rtfeldman$elm_css$Css$batch(
-	_List_fromArray(
-		[
-			A2($rtfeldman$elm_css$Css$property, '--tw-bg-opacity', '1'),
-			A2($rtfeldman$elm_css$Css$property, 'background-color', 'rgba(255, 255, 255, var(--tw-bg-opacity))')
-		]));
-var $rtfeldman$elm_css$Html$Styled$button = $rtfeldman$elm_css$Html$Styled$node('button');
-var $rtfeldman$elm_css$Html$Styled$canvas = $rtfeldman$elm_css$Html$Styled$node('canvas');
+var $rtfeldman$elm_css$Html$Styled$h2 = $rtfeldman$elm_css$Html$Styled$node('h2');
+var $rtfeldman$elm_css$Html$Styled$h3 = $rtfeldman$elm_css$Html$Styled$node('h3');
+var $rtfeldman$elm_css$Html$Styled$img = $rtfeldman$elm_css$Html$Styled$node('img');
+var $rtfeldman$elm_css$Html$Styled$span = $rtfeldman$elm_css$Html$Styled$node('span');
 var $rtfeldman$elm_css$VirtualDom$Styled$property = F2(
 	function (key, value) {
 		return A3(
@@ -9555,36 +8538,13 @@ var $rtfeldman$elm_css$Html$Styled$Attributes$stringProperty = F2(
 			key,
 			$elm$json$Json$Encode$string(string));
 	});
-var $rtfeldman$elm_css$Html$Styled$Attributes$class = $rtfeldman$elm_css$Html$Styled$Attributes$stringProperty('className');
-var $author$project$Tailwind$Utilities$flex = A2($rtfeldman$elm_css$Css$property, 'display', 'flex');
-var $author$project$Tailwind$Utilities$flex_col = A2($rtfeldman$elm_css$Css$property, 'flex-direction', 'column');
-var $author$project$Tailwind$Utilities$flex_wrap = A2($rtfeldman$elm_css$Css$property, 'flex-wrap', 'wrap');
-var $author$project$Tailwind$Utilities$font_bold = A2($rtfeldman$elm_css$Css$property, 'font-weight', '700');
-var $rtfeldman$elm_css$Html$Styled$h1 = $rtfeldman$elm_css$Html$Styled$node('h1');
-var $rtfeldman$elm_css$Html$Styled$h3 = $rtfeldman$elm_css$Html$Styled$node('h3');
-var $rtfeldman$elm_css$Css$Preprocess$ExtendSelector = F2(
-	function (a, b) {
-		return {$: 'ExtendSelector', a: a, b: b};
-	});
-var $rtfeldman$elm_css$Css$Structure$PseudoClassSelector = function (a) {
-	return {$: 'PseudoClassSelector', a: a};
+var $rtfeldman$elm_css$Html$Styled$Attributes$src = function (url) {
+	return A2($rtfeldman$elm_css$Html$Styled$Attributes$stringProperty, 'src', url);
 };
-var $rtfeldman$elm_css$Css$pseudoClass = function (_class) {
-	return $rtfeldman$elm_css$Css$Preprocess$ExtendSelector(
-		$rtfeldman$elm_css$Css$Structure$PseudoClassSelector(_class));
+var $author$project$PhotoFolders$urlPrefix = 'http://elm-in-action.com/';
+var $author$project$PhotoFolders$ClickedPhoto = function (a) {
+	return {$: 'ClickedPhoto', a: a};
 };
-var $rtfeldman$elm_css$Css$hover = $rtfeldman$elm_css$Css$pseudoClass('hover');
-var $rtfeldman$elm_css$Html$Styled$Attributes$id = $rtfeldman$elm_css$Html$Styled$Attributes$stringProperty('id');
-var $author$project$Tailwind$Utilities$items_center = A2($rtfeldman$elm_css$Css$property, 'align-items', 'center');
-var $author$project$Tailwind$Utilities$justify_between = A2($rtfeldman$elm_css$Css$property, 'justify-content', 'space-between');
-var $author$project$Tailwind$Utilities$justify_center = A2($rtfeldman$elm_css$Css$property, 'justify-content', 'center');
-var $author$project$Tailwind$Utilities$mt_4 = A2($rtfeldman$elm_css$Css$property, 'margin-top', '1rem');
-var $author$project$Tailwind$Utilities$my_8 = $rtfeldman$elm_css$Css$batch(
-	_List_fromArray(
-		[
-			A2($rtfeldman$elm_css$Css$property, 'margin-top', '2rem'),
-			A2($rtfeldman$elm_css$Css$property, 'margin-bottom', '2rem')
-		]));
 var $elm$virtual_dom$VirtualDom$Normal = function (a) {
 	return {$: 'Normal', a: a};
 };
@@ -9610,471 +8570,106 @@ var $rtfeldman$elm_css$Html$Styled$Events$onClick = function (msg) {
 		'click',
 		$elm$json$Json$Decode$succeed(msg));
 };
-var $author$project$Tailwind$Utilities$p_4 = A2($rtfeldman$elm_css$Css$property, 'padding', '1rem');
-var $author$project$Tailwind$Utilities$self_start = A2($rtfeldman$elm_css$Css$property, 'align-self', 'flex-start');
-var $author$project$Tailwind$Utilities$text_2xl = $rtfeldman$elm_css$Css$batch(
-	_List_fromArray(
-		[
-			A2($rtfeldman$elm_css$Css$property, 'font-size', '1.5rem'),
-			A2($rtfeldman$elm_css$Css$property, 'line-height', '2rem')
-		]));
-var $author$project$Tailwind$Utilities$text_4xl = $rtfeldman$elm_css$Css$batch(
-	_List_fromArray(
-		[
-			A2($rtfeldman$elm_css$Css$property, 'font-size', '2.25rem'),
-			A2($rtfeldman$elm_css$Css$property, 'line-height', '2.5rem')
-		]));
-var $author$project$Tailwind$Utilities$text_black = $rtfeldman$elm_css$Css$batch(
-	_List_fromArray(
-		[
-			A2($rtfeldman$elm_css$Css$property, '--tw-text-opacity', '1'),
-			A2($rtfeldman$elm_css$Css$property, 'color', 'rgba(0, 0, 0, var(--tw-text-opacity))')
-		]));
-var $author$project$Tailwind$Utilities$text_gv_primary = $rtfeldman$elm_css$Css$batch(
-	_List_fromArray(
-		[
-			A2($rtfeldman$elm_css$Css$property, '--tw-text-opacity', '1'),
-			A2($rtfeldman$elm_css$Css$property, 'color', 'rgba(96, 181, 204, var(--tw-text-opacity))')
-		]));
-var $elm$json$Json$Encode$int = _Json_wrap;
-var $rtfeldman$elm_css$Html$Styled$label = $rtfeldman$elm_css$Html$Styled$node('label');
-var $rtfeldman$elm_css$Html$Styled$Attributes$max = $rtfeldman$elm_css$Html$Styled$Attributes$stringProperty('max');
-var $author$project$Tailwind$Utilities$mr_1 = A2($rtfeldman$elm_css$Css$property, 'margin-right', '0.25rem');
-var $author$project$Tailwind$Utilities$mr_4 = A2($rtfeldman$elm_css$Css$property, 'margin-right', '1rem');
-var $elm$json$Json$Decode$at = F2(
-	function (fields, decoder) {
-		return A3($elm$core$List$foldr, $elm$json$Json$Decode$field, decoder, fields);
-	});
-var $author$project$PhotoGroove$onSlide = function (toMsg) {
+var $author$project$PhotoFolders$viewRelatedPhoto = function (url) {
 	return A2(
-		$rtfeldman$elm_css$Html$Styled$Events$on,
-		'slide',
-		A2(
-			$elm$json$Json$Decode$map,
-			toMsg,
-			A2(
-				$elm$json$Json$Decode$at,
-				_List_fromArray(
-					['detail', 'userSlidTo']),
-				$elm$json$Json$Decode$int)));
-};
-var $rtfeldman$elm_css$Html$Styled$Attributes$property = $rtfeldman$elm_css$VirtualDom$Styled$property;
-var $author$project$PhotoGroove$rangeSlider = F2(
-	function (attributes, children) {
-		return A3($rtfeldman$elm_css$Html$Styled$node, 'range-slider', attributes, children);
-	});
-var $author$project$Tailwind$Utilities$w_1over6 = A2($rtfeldman$elm_css$Css$property, 'width', '16.666667%');
-var $author$project$Tailwind$Utilities$w_40 = A2($rtfeldman$elm_css$Css$property, 'width', '10rem');
-var $author$project$PhotoGroove$viewFilter = F3(
-	function (toMsg, name, magnitude) {
-		return A2(
-			$rtfeldman$elm_css$Html$Styled$div,
-			_List_fromArray(
-				[
-					$rtfeldman$elm_css$Html$Styled$Attributes$css(
-					_List_fromArray(
-						[$author$project$Tailwind$Utilities$flex]))
-				]),
-			_List_fromArray(
-				[
-					A2(
-					$rtfeldman$elm_css$Html$Styled$label,
-					_List_fromArray(
-						[
-							$rtfeldman$elm_css$Html$Styled$Attributes$css(
-							_List_fromArray(
-								[$author$project$Tailwind$Utilities$w_1over6, $author$project$Tailwind$Utilities$mr_4]))
-						]),
-					_List_fromArray(
-						[
-							$rtfeldman$elm_css$Html$Styled$text(name)
-						])),
-					A2(
-					$author$project$PhotoGroove$rangeSlider,
-					_List_fromArray(
-						[
-							$rtfeldman$elm_css$Html$Styled$Attributes$max('11'),
-							A2(
-							$rtfeldman$elm_css$Html$Styled$Attributes$property,
-							'val',
-							$elm$json$Json$Encode$int(magnitude)),
-							$rtfeldman$elm_css$Html$Styled$Attributes$css(
-							_List_fromArray(
-								[$author$project$Tailwind$Utilities$w_40, $author$project$Tailwind$Utilities$mr_1])),
-							$author$project$PhotoGroove$onSlide(toMsg)
-						]),
-					_List_Nil),
-					A2(
-					$rtfeldman$elm_css$Html$Styled$label,
-					_List_Nil,
-					_List_fromArray(
-						[
-							$rtfeldman$elm_css$Html$Styled$text(
-							$elm$core$String$fromInt(magnitude))
-						]))
-				]));
-	});
-var $author$project$PhotoGroove$ClickedSize = function (a) {
-	return {$: 'ClickedSize', a: a};
-};
-var $elm$json$Json$Encode$bool = _Json_wrap;
-var $rtfeldman$elm_css$Html$Styled$Attributes$boolProperty = F2(
-	function (key, bool) {
-		return A2(
-			$rtfeldman$elm_css$VirtualDom$Styled$property,
-			key,
-			$elm$json$Json$Encode$bool(bool));
-	});
-var $rtfeldman$elm_css$Html$Styled$Attributes$checked = $rtfeldman$elm_css$Html$Styled$Attributes$boolProperty('checked');
-var $rtfeldman$elm_css$Html$Styled$input = $rtfeldman$elm_css$Html$Styled$node('input');
-var $author$project$Tailwind$Utilities$m_1 = A2($rtfeldman$elm_css$Css$property, 'margin', '0.25rem');
-var $rtfeldman$elm_css$Html$Styled$Attributes$name = $rtfeldman$elm_css$Html$Styled$Attributes$stringProperty('name');
-var $elm$json$Json$Decode$bool = _Json_decodeBool;
-var $rtfeldman$elm_css$Html$Styled$Events$targetChecked = A2(
-	$elm$json$Json$Decode$at,
-	_List_fromArray(
-		['target', 'checked']),
-	$elm$json$Json$Decode$bool);
-var $rtfeldman$elm_css$Html$Styled$Events$onCheck = function (tagger) {
-	return A2(
-		$rtfeldman$elm_css$Html$Styled$Events$on,
-		'change',
-		A2($elm$json$Json$Decode$map, tagger, $rtfeldman$elm_css$Html$Styled$Events$targetChecked));
-};
-var $author$project$Tailwind$Utilities$p_1 = A2($rtfeldman$elm_css$Css$property, 'padding', '0.25rem');
-var $author$project$PhotoGroove$sizeToString = function (size) {
-	switch (size.$) {
-		case 'Small':
-			return 'small';
-		case 'Medium':
-			return 'med';
-		default:
-			return 'large';
-	}
-};
-var $rtfeldman$elm_css$Html$Styled$Attributes$type_ = $rtfeldman$elm_css$Html$Styled$Attributes$stringProperty('type');
-var $author$project$PhotoGroove$viewSizeChooser = function (size) {
-	return A2(
-		$rtfeldman$elm_css$Html$Styled$label,
+		$rtfeldman$elm_css$Html$Styled$img,
 		_List_fromArray(
 			[
-				$rtfeldman$elm_css$Html$Styled$Attributes$css(
-				_List_fromArray(
-					[$author$project$Tailwind$Utilities$p_1]))
+				$rtfeldman$elm_css$Html$Styled$Attributes$css(_List_Nil),
+				$rtfeldman$elm_css$Html$Styled$Events$onClick(
+				$author$project$PhotoFolders$ClickedPhoto(url)),
+				$rtfeldman$elm_css$Html$Styled$Attributes$src($author$project$PhotoFolders$urlPrefix + ('photos/' + (url + '/thumb')))
+			]),
+		_List_Nil);
+};
+var $author$project$PhotoFolders$viewSelectedPhoto = function (photo) {
+	return A2(
+		$rtfeldman$elm_css$Html$Styled$div,
+		_List_fromArray(
+			[
+				$rtfeldman$elm_css$Html$Styled$Attributes$css(_List_Nil)
 			]),
 		_List_fromArray(
 			[
 				A2(
-				$rtfeldman$elm_css$Html$Styled$input,
+				$rtfeldman$elm_css$Html$Styled$h2,
+				_List_Nil,
 				_List_fromArray(
 					[
-						$rtfeldman$elm_css$Html$Styled$Attributes$type_('radio'),
-						$rtfeldman$elm_css$Html$Styled$Attributes$name('size'),
-						$rtfeldman$elm_css$Html$Styled$Events$onCheck(
-						function (t) {
-							return $author$project$PhotoGroove$ClickedSize(
-								_Utils_update(
-									size,
-									{selected: t}));
-						}),
-						$rtfeldman$elm_css$Html$Styled$Attributes$checked(size.selected),
-						$rtfeldman$elm_css$Html$Styled$Attributes$css(
-						_List_fromArray(
-							[$author$project$Tailwind$Utilities$m_1]))
+						$rtfeldman$elm_css$Html$Styled$text(photo.title)
+					])),
+				A2(
+				$rtfeldman$elm_css$Html$Styled$img,
+				_List_fromArray(
+					[
+						$rtfeldman$elm_css$Html$Styled$Attributes$src($author$project$PhotoFolders$urlPrefix + ('photos/' + (photo.url + '/full')))
 					]),
 				_List_Nil),
-				$rtfeldman$elm_css$Html$Styled$text(
-				$author$project$PhotoGroove$sizeToString(size.size))
-			]));
-};
-var $author$project$PhotoGroove$ClickedPhoto = function (a) {
-	return {$: 'ClickedPhoto', a: a};
-};
-var $author$project$Tailwind$Utilities$w_16 = A2($rtfeldman$elm_css$Css$property, 'width', '4rem');
-var $author$project$Tailwind$Utilities$w_28 = A2($rtfeldman$elm_css$Css$property, 'width', '7rem');
-var $author$project$Tailwind$Utilities$w_52 = A2($rtfeldman$elm_css$Css$property, 'width', '13rem');
-var $author$project$PhotoGroove$choosenSizeToPixel = function (size) {
-	switch (size.$) {
-		case 'Small':
-			return $author$project$Tailwind$Utilities$w_16;
-		case 'Medium':
-			return $author$project$Tailwind$Utilities$w_28;
-		default:
-			return $author$project$Tailwind$Utilities$w_52;
-	}
-};
-var $rtfeldman$elm_css$Html$Styled$img = $rtfeldman$elm_css$Html$Styled$node('img');
-var $author$project$Tailwind$Utilities$border_2 = A2($rtfeldman$elm_css$Css$property, 'border-width', '2px');
-var $author$project$Tailwind$Utilities$border_8 = A2($rtfeldman$elm_css$Css$property, 'border-width', '8px');
-var $author$project$Tailwind$Utilities$border_gv_primary = $rtfeldman$elm_css$Css$batch(
-	_List_fromArray(
-		[
-			A2($rtfeldman$elm_css$Css$property, '--tw-border-opacity', '1'),
-			A2($rtfeldman$elm_css$Css$property, 'border-color', 'rgba(96, 181, 204, var(--tw-border-opacity))')
-		]));
-var $author$project$Tailwind$Utilities$border_solid = A2($rtfeldman$elm_css$Css$property, 'border-style', 'solid');
-var $author$project$Tailwind$Utilities$border_white = $rtfeldman$elm_css$Css$batch(
-	_List_fromArray(
-		[
-			A2($rtfeldman$elm_css$Css$property, '--tw-border-opacity', '1'),
-			A2($rtfeldman$elm_css$Css$property, 'border-color', 'rgba(255, 255, 255, var(--tw-border-opacity))')
-		]));
-var $author$project$Tailwind$Utilities$m_0 = A2($rtfeldman$elm_css$Css$property, 'margin', '0px');
-var $author$project$PhotoGroove$selectedImageEffect = F2(
-	function (url, isSelected) {
-		return _Utils_eq(url, isSelected) ? _List_fromArray(
-			[$author$project$Tailwind$Utilities$border_gv_primary, $author$project$Tailwind$Utilities$border_solid, $author$project$Tailwind$Utilities$border_8, $author$project$Tailwind$Utilities$m_0]) : _List_fromArray(
-			[$author$project$Tailwind$Utilities$border_white, $author$project$Tailwind$Utilities$border_solid, $author$project$Tailwind$Utilities$border_2, $author$project$Tailwind$Utilities$m_1]);
-	});
-var $rtfeldman$elm_css$Html$Styled$Attributes$src = function (url) {
-	return A2($rtfeldman$elm_css$Html$Styled$Attributes$stringProperty, 'src', url);
-};
-var $rtfeldman$elm_css$Html$Styled$Attributes$title = $rtfeldman$elm_css$Html$Styled$Attributes$stringProperty('title');
-var $author$project$PhotoGroove$viewThumbnail = F3(
-	function (isSelected, choosenSize, thumb) {
-		return A2(
-			$rtfeldman$elm_css$Html$Styled$img,
-			_List_fromArray(
-				[
-					$rtfeldman$elm_css$Html$Styled$Attributes$src(
-					_Utils_ap($author$project$PhotoGroove$urlPrefix, thumb.url)),
-					$rtfeldman$elm_css$Html$Styled$Attributes$title(
-					thumb.title + ('[' + ($elm$core$String$fromInt(thumb.size) + ' KB]'))),
-					$rtfeldman$elm_css$Html$Styled$Attributes$css(
-					_Utils_ap(
-						A2($author$project$PhotoGroove$selectedImageEffect, thumb.url, isSelected),
-						_List_fromArray(
-							[
-								$author$project$PhotoGroove$choosenSizeToPixel(choosenSize)
-							]))),
-					$rtfeldman$elm_css$Html$Styled$Events$onClick(
-					$author$project$PhotoGroove$ClickedPhoto(thumb.url))
-				]),
-			_List_Nil);
-	});
-var $author$project$Tailwind$Utilities$w_2over4 = A2($rtfeldman$elm_css$Css$property, 'width', '50%');
-var $author$project$Tailwind$Utilities$w_3over4 = A2($rtfeldman$elm_css$Css$property, 'width', '75%');
-var $author$project$Tailwind$Utilities$w_4over5 = A2($rtfeldman$elm_css$Css$property, 'width', '80%');
-var $author$project$Tailwind$Utilities$w_full = A2($rtfeldman$elm_css$Css$property, 'width', '100%');
-var $author$project$PhotoGroove$viewLoaded = F3(
-	function (photos, selectedUrl, model) {
-		return _List_fromArray(
-			[
+				A2(
+				$rtfeldman$elm_css$Html$Styled$span,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$rtfeldman$elm_css$Html$Styled$text(
+						$elm$core$String$fromInt(photo.size) + 'KB')
+					])),
+				A2(
+				$rtfeldman$elm_css$Html$Styled$h3,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$rtfeldman$elm_css$Html$Styled$text('Related')
+					])),
 				A2(
 				$rtfeldman$elm_css$Html$Styled$div,
 				_List_fromArray(
 					[
-						$rtfeldman$elm_css$Html$Styled$Attributes$css(
-						_List_fromArray(
-							[$author$project$Tailwind$Utilities$flex, $author$project$Tailwind$Utilities$my_8, $author$project$Tailwind$Utilities$justify_center, $author$project$Tailwind$Utilities$items_center]))
+						$rtfeldman$elm_css$Html$Styled$Attributes$css(_List_Nil)
 					]),
-				_List_fromArray(
-					[
-						A2(
-						$rtfeldman$elm_css$Html$Styled$div,
-						_List_fromArray(
-							[
-								$rtfeldman$elm_css$Html$Styled$Attributes$css(
-								_List_fromArray(
-									[$author$project$Tailwind$Utilities$w_3over4]))
-							]),
-						_List_fromArray(
-							[
-								A2(
-								$rtfeldman$elm_css$Html$Styled$div,
-								_List_fromArray(
-									[
-										$rtfeldman$elm_css$Html$Styled$Attributes$css(
-										_List_fromArray(
-											[$author$project$Tailwind$Utilities$flex, $author$project$Tailwind$Utilities$items_center, $author$project$Tailwind$Utilities$justify_between]))
-									]),
-								_List_fromArray(
-									[
-										A2(
-										$rtfeldman$elm_css$Html$Styled$h1,
-										_List_fromArray(
-											[
-												$rtfeldman$elm_css$Html$Styled$Attributes$css(
-												_List_fromArray(
-													[$author$project$Tailwind$Utilities$text_4xl, $author$project$Tailwind$Utilities$text_gv_primary, $author$project$Tailwind$Utilities$font_bold]))
-											]),
-										_List_fromArray(
-											[
-												$rtfeldman$elm_css$Html$Styled$text('Photo Groove')
-											])),
-										A2(
-										$rtfeldman$elm_css$Html$Styled$div,
-										_List_fromArray(
-											[
-												$rtfeldman$elm_css$Html$Styled$Attributes$css(_List_Nil)
-											]),
-										_List_fromArray(
-											[
-												$rtfeldman$elm_css$Html$Styled$text(model.activity)
-											]))
-									])),
-								A2(
-								$rtfeldman$elm_css$Html$Styled$div,
-								_List_fromArray(
-									[
-										$rtfeldman$elm_css$Html$Styled$Attributes$css(
-										_List_fromArray(
-											[$author$project$Tailwind$Utilities$flex, $author$project$Tailwind$Utilities$justify_between]))
-									]),
-								_List_fromArray(
-									[
-										A2(
-										$rtfeldman$elm_css$Html$Styled$div,
-										_List_fromArray(
-											[
-												$rtfeldman$elm_css$Html$Styled$Attributes$css(
-												_List_fromArray(
-													[$author$project$Tailwind$Utilities$flex, $author$project$Tailwind$Utilities$flex_col, $author$project$Tailwind$Utilities$w_full]))
-											]),
-										_List_fromArray(
-											[
-												A2(
-												$rtfeldman$elm_css$Html$Styled$h3,
-												_List_Nil,
-												_List_fromArray(
-													[
-														$rtfeldman$elm_css$Html$Styled$text('Thumnail Size:')
-													])),
-												A2(
-												$rtfeldman$elm_css$Html$Styled$div,
-												_List_fromArray(
-													[
-														$rtfeldman$elm_css$Html$Styled$Attributes$css(
-														_List_fromArray(
-															[$author$project$Tailwind$Utilities$flex]))
-													]),
-												A2($elm$core$List$map, $author$project$PhotoGroove$viewSizeChooser, model.sizes))
-											])),
-										A2(
-										$rtfeldman$elm_css$Html$Styled$div,
-										_List_fromArray(
-											[
-												$rtfeldman$elm_css$Html$Styled$Attributes$css(
-												_List_fromArray(
-													[$author$project$Tailwind$Utilities$flex, $author$project$Tailwind$Utilities$w_full, $author$project$Tailwind$Utilities$justify_between, $author$project$Tailwind$Utilities$items_center]))
-											]),
-										_List_fromArray(
-											[
-												A2(
-												$rtfeldman$elm_css$Html$Styled$div,
-												_List_fromArray(
-													[
-														$rtfeldman$elm_css$Html$Styled$Attributes$css(
-														_List_fromArray(
-															[$author$project$Tailwind$Utilities$flex, $author$project$Tailwind$Utilities$flex_col, $author$project$Tailwind$Utilities$w_4over5]))
-													]),
-												_List_fromArray(
-													[
-														A3($author$project$PhotoGroove$viewFilter, $author$project$PhotoGroove$SlidHue, 'Hue', model.hue),
-														A3($author$project$PhotoGroove$viewFilter, $author$project$PhotoGroove$SlidRipple, 'Ripple', model.ripple),
-														A3($author$project$PhotoGroove$viewFilter, $author$project$PhotoGroove$SlidNoise, 'Noise', model.noise)
-													])),
-												A2(
-												$rtfeldman$elm_css$Html$Styled$button,
-												_List_fromArray(
-													[
-														$rtfeldman$elm_css$Html$Styled$Events$onClick($author$project$PhotoGroove$ClickedSurpireseMe),
-														$rtfeldman$elm_css$Html$Styled$Attributes$css(
-														_List_fromArray(
-															[
-																$author$project$Tailwind$Utilities$p_4,
-																$author$project$Tailwind$Utilities$bg_gv_primary,
-																$author$project$Tailwind$Utilities$w_2over4,
-																$author$project$Tailwind$Utilities$text_black,
-																$author$project$Tailwind$Utilities$text_2xl,
-																$rtfeldman$elm_css$Css$hover(
-																_List_fromArray(
-																	[$author$project$Tailwind$Utilities$bg_white]))
-															]))
-													]),
-												_List_fromArray(
-													[
-														$rtfeldman$elm_css$Html$Styled$text('Surprise Me!')
-													]))
-											]))
-									])),
-								A2(
-								$rtfeldman$elm_css$Html$Styled$div,
-								_List_fromArray(
-									[
-										$rtfeldman$elm_css$Html$Styled$Attributes$css(
-										_List_fromArray(
-											[$author$project$Tailwind$Utilities$flex, $author$project$Tailwind$Utilities$justify_between, $author$project$Tailwind$Utilities$mt_4]))
-									]),
-								_List_fromArray(
-									[
-										A2(
-										$rtfeldman$elm_css$Html$Styled$div,
-										_List_fromArray(
-											[
-												$rtfeldman$elm_css$Html$Styled$Attributes$css(
-												_List_fromArray(
-													[$author$project$Tailwind$Utilities$flex, $author$project$Tailwind$Utilities$flex_wrap, $author$project$Tailwind$Utilities$self_start]))
-											]),
-										A2(
-											$elm$core$List$map,
-											A2($author$project$PhotoGroove$viewThumbnail, selectedUrl, model.chosenSize),
-											photos)),
-										A2(
-										$rtfeldman$elm_css$Html$Styled$canvas,
-										_List_fromArray(
-											[
-												$rtfeldman$elm_css$Html$Styled$Attributes$id('main-canvas'),
-												$rtfeldman$elm_css$Html$Styled$Attributes$class('large')
-											]),
-										_List_Nil)
-									]))
-							]))
-					]))
-			]);
-	});
-var $author$project$PhotoGroove$view = function (model) {
+				A2($elm$core$List$map, $author$project$PhotoFolders$viewRelatedPhoto, photo.relatedUrls))
+			]));
+};
+var $author$project$PhotoFolders$view = function (model) {
+	var photoByUrl = function (url) {
+		return A2($elm$core$Dict$get, url, model.photos);
+	};
+	var selectedPhoto = function () {
+		var _v0 = A2($elm$core$Maybe$andThen, photoByUrl, model.selectedPhotoUrl);
+		if (_v0.$ === 'Just') {
+			var photo = _v0.a;
+			return $author$project$PhotoFolders$viewSelectedPhoto(photo);
+		} else {
+			return $rtfeldman$elm_css$Html$Styled$text('');
+		}
+	}();
 	return A2(
 		$rtfeldman$elm_css$Html$Styled$div,
 		_List_fromArray(
 			[
 				$rtfeldman$elm_css$Html$Styled$Attributes$css(
 				_List_fromArray(
-					[
-						$rtfeldman$elm_css$Css$backgroundColor(
-						A3($rtfeldman$elm_css$Css$rgb, 44, 44, 44)),
-						$author$project$Tailwind$Utilities$text_white
-					]))
+					[$author$project$Tailwind$Utilities$flex, $author$project$Tailwind$Utilities$items_center]))
 			]),
-		function () {
-			var view_ = function () {
-				var _v0 = model.status;
-				switch (_v0.$) {
-					case 'Loaded':
-						var photos = _v0.a;
-						var selectedUrl = _v0.b;
-						return A3($author$project$PhotoGroove$viewLoaded, photos, selectedUrl, model);
-					case 'Loading':
-						return _List_Nil;
-					default:
-						var errorMessage = _v0.a;
-						return _List_fromArray(
-							[
-								$rtfeldman$elm_css$Html$Styled$text('Error:' + errorMessage)
-							]);
-				}
-			}();
-			return A2(
-				$elm$core$List$cons,
-				$rtfeldman$elm_css$Css$Global$global($author$project$Tailwind$Utilities$globalStyles),
-				view_);
-		}());
+		_List_fromArray(
+			[
+				A2(
+				$rtfeldman$elm_css$Html$Styled$div,
+				_List_fromArray(
+					[
+						$rtfeldman$elm_css$Html$Styled$Attributes$css(_List_Nil)
+					]),
+				_List_fromArray(
+					[selectedPhoto]))
+			]));
 };
-var $author$project$PhotoGroove$main = $elm$browser$Browser$element(
+var $author$project$PhotoFolders$main = $elm$browser$Browser$element(
 	{
-		init: $author$project$PhotoGroove$init,
-		subscriptions: $author$project$PhotoGroove$subscriptions,
-		update: $author$project$PhotoGroove$update,
-		view: A2($elm$core$Basics$composeR, $author$project$PhotoGroove$view, $rtfeldman$elm_css$Html$Styled$toUnstyled)
+		init: $author$project$PhotoFolders$init,
+		subscriptions: function (_v0) {
+			return $elm$core$Platform$Sub$none;
+		},
+		update: $author$project$PhotoFolders$update,
+		view: A2($elm$core$Basics$composeR, $author$project$PhotoFolders$view, $rtfeldman$elm_css$Html$Styled$toUnstyled)
 	});
-_Platform_export({'PhotoGroove':{'init':$author$project$PhotoGroove$main($elm$json$Json$Decode$value)(0)}});}(this));
+_Platform_export({'PhotoFolders':{'init':$author$project$PhotoFolders$main(
+	$elm$json$Json$Decode$succeed(_Utils_Tuple0))(0)}});}(this));

@@ -7,7 +7,7 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "compile": "elm make src/PhotoGroove.elm --output public/app.js",
+    "compile": "elm make src/PhotoFolders.elm --output public/app.js",
     "compile:css": "mkdir -p gen && node setup_script.js",
     "server": "sirv --dev public",
     "dev": "run-p watch server",
